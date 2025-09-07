@@ -1,0 +1,91 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ecommerce-app
+  namespace: ecommerce
+  labels:
+    app: ecommerce-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ecommerce-app
+  template:
+    metadata:
+      labels:
+        app: ecommerce-app
+    spec:
+      containers:
+      - name: ecommerce-app
+        image: dashing-ecommerce:latest
+        ports:
+        - containerPort: 3000
+        env:
+        - name: NEXTAUTH_URL
+          valueFrom:
+            configMapKeyRef:
+              name: ecommerce-config
+              key: NEXTAUTH_URL
+        - name: NEXTAUTH_SECRET
+          valueFrom:
+            configMapKeyRef:
+              name: ecommerce-config
+              key: NEXTAUTH_SECRET
+        - name: MONGODB_URI
+          valueFrom:
+            configMapKeyRef:
+              name: ecommerce-config
+              key: MONGODB_URI
+        - name: NODE_ENV
+          valueFrom:
+            configMapKeyRef:
+              name: ecommerce-config
+              key: NODE_ENV
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "100m"
+          limits:
+            memory: "512Mi"
+            cpu: "300m"
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 3000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 3000
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+        startupProbe:
+          httpGet:
+            path: /
+            port: 3000
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ecommerce-service
+  namespace: ecommerce
+  labels:
+    app: ecommerce-app
+spec:
+  ports:
+  - port: 3000
+    targetPort: 3000
+    protocol: TCP
+    name: http
+  selector:
+    app: ecommerce-app
+  type: ClusterIP

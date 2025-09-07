@@ -1,0 +1,136 @@
+.container{
+  position:relative;
+  margin: 20px 10px;
+
+}
+.productCard {
+  padding: 10px 20px 10px 20px;
+  max-width: 250px;
+  -webkit-box-shadow: 0 2px 9px 0 rgba(0, 0, 0, 0.08);
+  box-shadow: 0 2px 9px 0 rgba(0, 0, 0, 0.08);
+  border-radius: 12px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+.sticker {
+  background-color: var(--primary-blue-dark);
+  color: white;
+  font-weight: bolder;
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 3px 10px;
+  border-top-right-radius: 6px;
+  z-index: 10;
+}
+.productImage {
+  height: 250px;
+  width: 230px;
+  object-fit: contain;
+  border-radius: 12px;
+}
+.productInfo {
+  align-self: flex-start;
+}
+.productName {
+  padding: 0.5rem 0;
+  font-size: 1.1rem;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  width: 220px;
+}
+.productPrice {
+  color: var(--primary-blue-dark);
+}
+.hoverCard {
+  position: absolute;
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--primary-blue-dark);
+  height: 100%;
+  width: 100%;
+  opacity: 0;
+  z-index: 1;
+  transition: 0.5s all ease-in-out;
+}
+.hoverCategory {
+  position: absolute;
+  font-weight: 500;
+  left: 15px;
+  top: 10px;
+  color: #fff;
+  z-index: 1;
+  text-transform: capitalize;
+}
+.productCard:hover {
+  box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.15);
+  -webkit-box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.15);
+}
+
+.buttonActions {
+  justify-content: space-evenly;
+  max-width: 250px;
+  width: 100%;
+  top: 45%;
+  position: absolute;
+  cursor:pointer;
+  opacity:0;
+  transition:0.2s all ease-in-out;
+  display:flex;
+  transform:scale(0);
+}
+@media (min-width:650px){
+  .container:hover .buttonActions{
+    opacity:1 ;
+    z-index:1000;
+    transform:scale(1)
+  }
+}
+
+.iconWrapper {
+z-index:1000;
+color:#fff;
+
+}
+
+.tooltip {
+  position: absolute;
+  opacity: 0;
+  top: -10px;
+  transition: 0.3s all ease-in-out;
+}
+.iconWrapper:hover .tooltip {
+  opacity: 1;
+  top: -25px;
+}
+
+@media (min-width: 650px) {
+  .hoverCard {
+    display: flex;
+  }
+  .container:hover .hoverCard {
+    opacity: 0.8;
+  }
+
+  .container:hover .productInfo {
+    color: #fff;
+    z-index: 1000;
+  }
+  .container:hover .productPrice {
+    color: #fff;
+    z-index: 1000;
+  }
+  .container:hover .productImage {
+    opacity: 0.7;
+  }
+
+  
+}

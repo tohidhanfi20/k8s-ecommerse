@@ -1,0 +1,23 @@
+
+/* For Smaller Devices */
+@media(min-width:650px){
+    .header{
+        background:red;
+    
+    }
+    }
+    /* For Tables */
+    @media(min-width:1024px){
+        .header{
+            background:yellow;
+        
+        }
+        }
+    
+        /* For Larger Devices @desktops */
+        @media(min-width:1200px){
+    .header{
+        background:green;
+    
+    }
+        }

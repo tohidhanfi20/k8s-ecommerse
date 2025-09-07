@@ -1,0 +1,175 @@
+/* ShippingForm.module.css */
+.shipping__cart__maincontent {
+  padding-top: 5rem ;
+}
+.cart__shipping__form {
+  display: flex;
+  justify-content: space-evenly;
+  flex-direction:column;
+}
+@media (min-width:650px){
+    .cart__shipping__form {
+    flex-direction:row;
+    }
+}
+.form_group {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  padding: 0;
+  overflow: hidden;
+}
+
+.form_group input {
+  border: none;
+  outline: none;
+  border-bottom: 1px solid #ececec;
+  height: 50px;
+  width: 300px;
+  margin: 5px 5px 0 5px;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  font-size: 16px;
+  padding-top: 20px;
+}
+
+.form_group input:focus + label {
+  top: 3px;
+  font-size: 13px;
+  left: 7px;
+  padding-left: 4px;
+  font-weight: 500;
+}
+
+.form_group label {
+  order: -1;
+  position: absolute;
+  left: 15px;
+  color: #ddd;
+  transition: 0.05s;
+}
+
+.or_middle_round {
+  left: -20%;
+  top: 50%;
+  position: absolute;
+  color: #e2e2e2;
+  font-size: 1.4rem;
+  background: #fff;
+}
+
+.signin__form {
+  border: 1px solid #ececec;
+  margin-top: 2rem;
+  border-radius: 20px;
+  width: 300px;
+  overflow: hidden;
+}
+
+.signin__form button {
+  padding: 18px;
+  width: 100%;
+  border: none;
+  color: white;
+  background-color: var(--primary-blue-dark);
+  font-size: 18px;
+  box-shadow: 0 2px 9px 0 rgba(0, 0, 0, 0.08);
+}
+
+.signin__form input {
+  text-indent: 1rem;
+}
+
+a.forget_password {
+  padding-top: 1rem;
+}
+
+.shipping__form__signin {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-right: 1px solid #fdf7f7;
+}
+@media (min-width:650px){
+    .shipping__form__signin {
+        width: 40%;
+        padding: 3rem 3rem 3.43rem 0;
+
+    }
+}
+.shipping__form__signup {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  padding:2rem 1rem;
+}
+@media (min-width:650px){
+    .shipping__form__signup {
+        width: 40.4%;
+        padding:0;
+
+    }
+}
+.form_group:nth-child(2n) {
+  border-left: 1px solid #ececec;
+}
+
+.form_group:last-child {
+  width: 100%;
+}
+.shipping__form__signup .form_group {
+  width: 50%;
+}
+.signup__form {
+  border: 1px solid #ececec;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  flex-wrap: wrap;
+  overflow: hidden;
+  margin-top: 2rem;
+  border-radius: 20px;
+}
+
+.cart__shipping__footer {
+  border-top: 1px solid #fdf7f7;
+  display: flex;
+  justify-content: space-between;
+}
+
+.cart__shipping__footer a {
+  width: 50%;
+  height: 60px;
+  border: none;
+  background: none;
+  transition: 0.4s;
+}
+
+.cart__shipping__footer a:hover {
+  background-color: var(
+    --primary-blue-dark
+  ); 
+  color: white;
+}
+
+.cart__shipping__footer a section {
+  display: flex;
+  justify-content: center;
+  cursor: pointer;
+  padding: 1.2rem;
+}
+
+.cart__shipping__footer a strong {
+  font-size: 18px;
+  font-weight: 400;
+}
+
+.cart__shipping__footer__previous {
+  border-right: 1px solid #fdf7f7;
+}

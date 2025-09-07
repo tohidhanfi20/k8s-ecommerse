@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ecommerce-config
+  namespace: ecommerce
+data:
+  NEXTAUTH_URL: "http://localhost:3000"
+  NEXTAUTH_SECRET: "your-secret-key-here"
+  MONGODB_URI: "mongodb://mongodb-service:27017/ecommerce"
+  NODE_ENV: "production"

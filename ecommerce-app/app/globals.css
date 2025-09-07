@@ -1,0 +1,165 @@
+:root {
+  --primary-blue-dark: #3958d8;
+  --text-light-gray: #ddd;
+  --border-color: #fdf7f7;
+  --background-gradient-light: linear-gradient(
+      101.96deg,
+      #2b87d4 27.24%,
+      rgba(55, 143, 215, 0.69) 100.85%,
+      rgba(56, 144, 216, 0.9) 98.68%,
+      rgba(91, 196, 227, 0.71) 98.68%
+    ),
+    #c4c4d2;
+  --background-gradient-dark: linear-gradient(
+      160.51deg,
+      #575ada 41.36%,
+      rgba(128, 110, 232, 0.312475) 147.66%,
+      #8c8dc0 147.66%
+    ),
+    #c4c4c4;
+  --opt-background: radial-gradient(
+    circle at top left,
+    #4a42ec 0%,
+    #3a1567 100%
+  );
+  --opt-box-shadow: 0 48px 48px -32px rgba(23, 16, 159, 0.2),
+    0 96px 96px -64px rgba(3, 2, 20, 0.6);
+}
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+  max-width: 1920px;
+  margin: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  position: relative;
+}
+h1,
+h2,
+h3,
+h4,
+h5 {
+  font-size: 2.4rem;
+}
+h1 {
+  text-align: center;
+}
+h3 {
+  font-size: 1.4rem;
+  font-weight: 900;
+}
+
+h5 {
+  letter-spacing: 0.8px;
+}
+span {
+  color: #fff;
+}
+a {
+  text-decoration: none;
+  outline:none;
+}
+
+nav {
+  -webkit-box-shadow: 0 2px 9px 0 rgba(0, 0, 0, 0.08);
+  box-shadow: 0 2px 9px 0 rgba(0, 0, 0, 0.08);
+}
+ul {
+  list-style: none;
+}
+
+nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+main {
+  position: absolute;
+  /* top:14vh; */
+  top: 95px;
+  background: #fff;
+  width: 95%;
+  margin-left: 2.5%;
+  -webkit-box-shadow: 0 2px 9px 0 rgba(0, 0, 0, 0.08);
+  box-shadow: 0 2px 9px 0 rgba(0, 0, 0, 0.08);
+  z-index: 1;
+}
+
+button {
+  font-family: __Frank_Ruhl_Libre_Fallback_d63ab4,
+    __Frank_Ruhl_Libre_Fallback_Fallback_d63ab4;
+}
+input[type="number"] {
+  padding: 10px;
+  margin: 10px;
+  width: 120px;
+  border: none;
+  outline: none;
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  background:#fbfbfb;
+}
+input[type="range"] {
+  width: 200px;
+}
+/* Overriding Slick Carousel Buttons Css Styles */
+/*Here*/
+.slick-prev:before {
+  color: #080f2d !important;
+  box-shadow: 0 2px 9px 0 rgba(0, 0, 0, 0.08);
+
+  -webkit-box-shadow: 0 2px 9px 0 rgba(0, 0, 0, 0.08);
+  font-size: 28px !important;
+  padding: 10px 7px;
+  z-index: 6000;
+}
+.slick-next:before {
+  color: #080f2d !important;
+  z-index: 1000 !important;
+  box-shadow: 0 2px 9px 0 rgba(0, 0, 0, 0.08);
+  -webkit-box-shadow: 0 2px 9px 0 rgba(0, 0, 0, 0.08);
+  font-size: 28px !important;
+  padding: 10px 7px;
+  z-index: 6000;
+}
+.slick-next {
+  right: 20px !important;
+}
+.slick-prev {
+  z-index: 1;
+}
+.slick-prev {
+  left: 0px !important;
+}
+
+@media (min-width: 650px) {
+  main {
+    top: 100px;
+  }
+}
+
+@media (min-width: 1200px) {
+  main {
+    top: 140px;
+  }
+}
+/* @media (min-width:650px){
+  main{
+    top:17.5vh;
+  }
+ }
+
+ @media (min-width:650px) and (max-width:1025px) {
+  main{
+    top:10.5vh;
+  }
+ }
+ @media (orientation: landscape) and (max-width:1025px) {
+ main{
+  top:22vh;
+ }
+} */

@@ -1,0 +1,125 @@
+/* styles/PaymentPage.module.css */
+
+.paymentPage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem 0.5rem;
+  }
+  @media (min-width:650px){
+    .paymentPage {
+        padding: 2rem;
+      }
+  }
+ .pageTitle  {
+    font-size: 24px;
+    margin-bottom: 1rem;
+  }
+  
+  .paymentOptions {
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 1rem;
+    justify-content: space-between;
+  }
+  @media (min-width:650px){
+    .paymentOptions {
+        width: 50%;
+
+    }
+  }
+  
+  .optionLabel {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.5rem;
+    cursor: pointer;
+    font-size: 18px;
+  }
+  
+  .radioInput {
+    margin-right: 0.5rem;
+  }
+  
+  .paymentForm {
+    border: 1px solid #ccc;
+    padding: 2rem;
+    border-radius: 5px;
+    max-width:600px;
+  }
+  @media (min-width:650px){
+    .paymentOptions {
+        width:70%;
+
+    }
+  }
+  .paypalContainer {
+max-width:600px;
+width:70%;
+margin:3rem 0;
+    border: 1px solid #ccc;
+    padding: 1rem;
+    border-radius: 5px;
+    text-align: center;
+  }
+  
+  .paypalText {
+    padding:1rem;
+    margin-bottom: 1rem;
+    font-size:2rem;
+  }
+  
+  .codInfo {
+max-width:600px;
+width:70%;
+margin:3rem 0;
+    border: 1px solid #ccc;
+    padding: 1rem;
+    border-radius: 5px;
+    text-align: center;
+  }
+  
+  .codText {
+    margin-bottom: 1rem;
+    font-size:2rem;
+
+  }
+  
+  .form {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .formGroup {
+    margin-bottom: 1rem;
+    display:flex;
+    flex-direction:column;
+    padding:1rem;
+  }
+  
+  .label {
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+  }
+  
+  .input {
+    padding: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width:180px;    
+  }
+  
+  .payButton {
+    padding: 1rem 1rem;
+    background-color: #0070f3;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size:1.3rem;
+  }
+  
+  .payButton:hover {
+    background-color: #0050c8;
+  }
+  

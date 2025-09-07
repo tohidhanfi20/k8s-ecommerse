@@ -1,0 +1,15 @@
+.container {
+  display: flex;
+}
+
+.sideBar {
+  display: flex;
+  flex-direction: column;
+  border-bottom: 1px solid #fdf7f7;
+  flex-basis: 25%;
+}
+.content {
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:space-evenly;
+}

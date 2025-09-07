@@ -1,0 +1,16 @@
+.featureProducts{
+position:relative;
+margin-top:2rem;
+}
+
+.featureTitleWrapper{
+    padding-bottom:0.4rem;
+    border-bottom:1px solid var(--border-color);
+    margin-bottom:1rem;
+}
+.featureTitle{
+    padding:0 0.5rem 0.2rem 0.5rem;
+    display:inline;
+    border-bottom: 4px solid var(--primary-blue-dark);
+    text-transform:uppercase;
+}

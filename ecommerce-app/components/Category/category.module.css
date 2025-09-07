@@ -1,0 +1,115 @@
+.featureProducts {
+  position: relative;
+  margin-top: 2rem;
+}
+
+.featureTitleWrapper {
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid var(--border-color);
+  margin-bottom: 1rem;
+}
+.featureTitle {
+  padding: 0 0.5rem 0.2rem 0.5rem;
+  display: inline;
+  border-bottom: 4px solid var(--primary-blue-dark);
+  text-transform: uppercase;
+}
+.category {
+  margin: 2rem 0.5rem;
+  display: flex;
+}
+.categoryImageLeft {
+  display:none;
+  flex-basis: 50%;
+  height: auto;
+  max-height:540px;
+  object-fit: cover;
+  object-position:bottom;
+  box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.15);
+  -webkit-box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.15);
+  cursor:pointer;
+}
+.categoryGrid {
+ 
+  display: flex;
+  flex-wrap: wrap;
+
+  justify-content:space-evenly;
+}
+.categoryContainer {
+  margin: 5px 0;
+}
+.categoryContainer:hover {
+  box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.15);
+  -webkit-box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.15);
+}
+.categoryBox {
+  padding: 5px;
+  transition: 0.5s all ease-in-out;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.categoryInfo {
+  background-color: rgba(255, 255, 255, 0.95);
+  bottom: 1em;
+  position: absolute;
+  margin: 0;
+  left: 1em;
+  right: 1em;
+  padding: 1em;
+  line-height: 1.4;
+  text-align: center;
+}
+.categoryImage {
+max-width:150px;
+  height: auto;
+  transition: 0.5s all ease-in-out;
+}
+.categoryContainer:hover .categoryImage {
+  transform: scale(1.2);
+}
+.categoryContainer:hover .categoryInfo{
+  color:var(--primary-blue-dark);
+}
+.categoryTitle{
+  font-size:0.7rem;
+  text-transform:uppercase;
+}
+.productCount{
+  font-size:0.7rem;
+}
+
+/* For Smaller Devices */
+@media(min-width:520px){
+  .categoryContainer{
+    padding: 15px;
+  }
+.categoryImage{
+  max-width:180px;
+}
+    .categoryGrid{
+      padding: 0 0rem 0 1rem;
+    }
+    .productCount{
+      font-size:1rem;
+    }
+    /* .categoryImage{
+      max-width: 180px;
+
+    } */
+    .categoryTitle{
+      font-size:1rem;
+    }
+    .categoryGrid{
+padding:0;
+justify-content:center;
+    }
+  }
+  /* For Desktops */
+  @media(min-width:1300px){
+    .categoryImageLeft {
+      display:flex;
+      }
+    }
+    

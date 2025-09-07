@@ -1,0 +1,48 @@
+.cart__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #fbfbfb;
+  }
+  .cart__header ul{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap:wrap;
+    flex-direction:column;
+  }
+  @media (min-width:650px){
+    .cart__header ul{
+flex-direction:row;
+    }
+  }
+
+  .navItem {
+    flex: 1;
+    text-align: center;
+    font-size: 1.1rem;
+    font-weight: bolder;
+    letter-spacing: 1.6px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content:center;
+    width:100%;
+  }
+  
+  .icon {
+    margin-right: 5px;
+  }
+  .activeLink{
+    background:#575ada ;
+  }
+  .activeLink a {
+    color:#fff;
+  }
+  .Icons{
+    margin-right:10px;
+  }
+  .activeLink .Icons{
+    color:#fff;
+  }

@@ -1,0 +1,41 @@
+.topController{
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    padding:0px 5px;
+    border:1px solid var(--border-color);
+}
+@media (min-width:650px){
+    .topController{
+        display:flex;
+        flex-direction:row;
+        justify-content:space-between;
+    } 
+}
+
+.control{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    width:100%;
+
+    padding:0px 15px;
+    border-right:1px solid var(--border-color);
+}
+@media (min-width:650px){
+ .control{
+    width:80%;
+
+ }
+}
+
+.control strong{
+    color:var( --primary-blue-dark);
+    cursor:pointer;
+}
+.topController span{
+    color:#000;
+    font-weight:600;
+    font-size:1.1rem;
+    padding:20px 0;
+}
