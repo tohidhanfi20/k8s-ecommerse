@@ -70,7 +70,7 @@ export default async function Profile() {
             <p style={{ margin: '0', color: '#666' }}>
               {session.user?.email || 'No Email'}
             </p>
-            {session.user?.role && (
+            {(session.user as any)?.role && (
               <span style={{
                 backgroundColor: '#3958D8',
                 color: 'white',
@@ -79,7 +79,7 @@ export default async function Profile() {
                 fontSize: '12px',
                 textTransform: 'uppercase'
               }}>
-                {session.user.role}
+                {(session.user as any).role}
               </span>
             )}
           </div>
