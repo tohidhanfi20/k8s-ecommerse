@@ -52,14 +52,28 @@ apt-get install -y \
     unzip \
     jq
 
-# Install Docker
-print_status "Installing Docker..."
+# Install containerd (not Docker)
+print_status "Installing containerd..."
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
 echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
 apt-get update -y
-apt-get install -y docker-ce docker-ce-cli containerd.io
-systemctl start docker
-systemctl enable docker
+apt-get install -y containerd.io
+
+# Configure containerd for Kubernetes
+print_status "Configuring containerd for Kubernetes..."
+mkdir -p /etc/containerd
+containerd config default | tee /etc/containerd/config.toml
+
+# Enable SystemdCgroup
+sed -i 's/SystemdCgroup = false/SystemdCgroup = true/g' /etc/containerd/config.toml
+
+# Restart containerd
+systemctl restart containerd
+systemctl enable containerd
+
+# Verify containerd is working
+print_status "Verifying containerd configuration..."
+systemctl status containerd --no-pager
 
 # Install kubectl
 print_status "Installing kubectl..."
@@ -134,12 +148,98 @@ ufw allow 30000:32767/tcp
 
 # Initialize Kubernetes cluster
 print_status "Initializing Kubernetes cluster..."
-kubeadm init \
+
+# Try with proper containerd configuration first
+if kubeadm init \
     --pod-network-cidr=10.244.0.0/16 \
     --apiserver-advertise-address=$(hostname -I | awk '{print $1}') \
     --control-plane-endpoint=$(hostname -I | awk '{print $1}') \
     --upload-certs \
-    --kubernetes-version=stable
+    --kubernetes-version=stable; then
+    print_status "Kubernetes cluster initialized successfully!"
+else
+    print_error "Standard initialization failed. Trying with containerd fixes..."
+    
+    # Stop containerd and reconfigure
+    systemctl stop containerd
+    
+    # Create a minimal containerd config
+    cat > /etc/containerd/config.toml << 'EOF'
+version = 2
+root = "/var/lib/containerd"
+state = "/run/containerd"
+
+[grpc]
+  address = "/run/containerd/containerd.sock"
+  uid = 0
+  gid = 0
+
+[ttrpc]
+  address = "/run/containerd/containerd.sock.ttrpc"
+  uid = 0
+  gid = 0
+
+[plugins]
+  [plugins."io.containerd.grpc.v1.cri"]
+    disable_tcp_service = true
+    stream_server_address = "127.0.0.1"
+    stream_server_port = "0"
+    stream_idle_timeout = "4h0m0s"
+    enable_selinux = false
+    sandbox_image = "registry.k8s.io/pause:3.9"
+    stats_collect_period = 10
+    systemd_cgroup = true
+    enable_tls_streaming = false
+    max_container_log_line_size = 16384
+    disable_cgroup = false
+    disable_apparmor = false
+    restrict_oom_score_adj = false
+    max_concurrent_downloads = 3
+    disable_proc_mount = false
+    unset_seccomp_profile = ""
+    tolerate_missing_hugetlb_controller = true
+    ignore_image_defined_volumes = false
+    [plugins."io.containerd.grpc.v1.cri".containerd]
+      snapshotter = "overlayfs"
+      default_runtime_name = "runc"
+      no_pivot = false
+      disable_snapshot_annotations = true
+      discard_unpacked_layers = false
+      [plugins."io.containerd.grpc.v1.cri".containerd.runtimes]
+        [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc]
+          runtime_type = "io.containerd.runc.v2"
+          runtime_engine = ""
+          runtime_root = ""
+          privileged_without_host_devices = false
+          base_runtime_spec = ""
+          [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc.options]
+            SystemdCgroup = true
+    [plugins."io.containerd.grpc.v1.cri".cni]
+      bin_dir = "/opt/cni/bin"
+      conf_dir = "/etc/cni/net.d"
+      max_conf_num = 1
+      conf_template = ""
+    [plugins."io.containerd.grpc.v1.cri".registry]
+      [plugins."io.containerd.grpc.v1.cri".registry.mirrors]
+        [plugins."io.containerd.grpc.v1.cri".registry.mirrors."docker.io"]
+          endpoint = ["https://registry-1.docker.io"]
+EOF
+
+    # Restart containerd
+    systemctl restart containerd
+    systemctl enable containerd
+    
+    # Wait for containerd to be ready
+    sleep 10
+    
+    # Try initialization again
+    kubeadm init \
+        --pod-network-cidr=10.244.0.0/16 \
+        --apiserver-advertise-address=$(hostname -I | awk '{print $1}') \
+        --control-plane-endpoint=$(hostname -I | awk '{print $1}') \
+        --upload-certs \
+        --kubernetes-version=stable
+fi
 
 # Setup kubectl
 print_status "Setting up kubectl..."
