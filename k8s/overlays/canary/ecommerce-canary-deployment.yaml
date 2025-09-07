@@ -16,14 +16,14 @@ spec:
     spec:
       containers:
       - name: ecommerce-app
-        image: your-dockerhub-username/dashing-ecommerce:v1.1.0-canary
+        image: tohidazure/k8s-ecommerce:latest
         resources:
           requests:
-            memory: "512Mi"
-            cpu: "250m"
+            memory: "64Mi"
+            cpu: "25m"
           limits:
-            memory: "1Gi"
-            cpu: "500m"
+            memory: "128Mi"
+            cpu: "100m"
         env:
         - name: NODE_ENV
           value: "production"

@@ -1,30 +1,62 @@
-# 🛒 Dashing Ecommerce - Kubernetes Deployment
+# 🛒 K8s E-commerce - Kubernetes Deployment
 
-A modern, scalable ecommerce application built with Next.js, MongoDB, and deployed on Kubernetes with Istio service mesh and comprehensive monitoring.
+A modern, scalable e-commerce application built with Next.js, MongoDB, and deployed on Kubernetes with comprehensive monitoring and dummy authentication system.
 
-## 🏗️ Architecture
+## 🏗️ Tech Stack
 
-### Core Components
-- **Frontend**: Next.js 13 with TypeScript
+### Frontend & Backend
+- **Framework**: Next.js 13 with App Router
+- **Language**: TypeScript
+- **Styling**: CSS Modules
+- **Authentication**: NextAuth.js (Dummy Authentication)
 - **Database**: MongoDB 7.0
-- **Authentication**: NextAuth.js
-- **Containerization**: Docker
-- **Orchestration**: Kubernetes
-- **Service Mesh**: Istio
-- **Monitoring**: Prometheus + Grafana
+- **API**: Next.js API Routes
 
-### Kubernetes Architecture
+### Infrastructure & DevOps
+- **Containerization**: Docker & Docker Compose
+- **Orchestration**: Kubernetes (kubeadm)
+- **Service Mesh**: Istio (Gateway, Virtual Services, Destination Rules)
+- **Monitoring**: Prometheus + Grafana
+- **CI/CD**: Docker Hub Integration
+- **Networking**: Flannel CNI
+- **Auto-scaling**: Horizontal Pod Autoscaler (HPA)
+
+### Development Tools
+- **Package Manager**: npm
+- **Build Tool**: Next.js Build System
+- **Environment**: Node.js 18
+- **Version Control**: Git
+
+## 🏗️ Kubernetes Implementation
+
+### Kubernetes Resources Used
+- **Deployments**: E-commerce app, MongoDB, Prometheus, Grafana
+- **Services**: ClusterIP services for internal communication
+- **ConfigMaps**: Environment variables and configuration
+- **PersistentVolumeClaims**: Data persistence for MongoDB and Grafana
+- **HorizontalPodAutoscaler**: Auto-scaling based on CPU/Memory
+- **Namespace**: Isolated `ecommerce` namespace
+- **Health Checks**: Liveness, Readiness, and Startup probes
+
+### Service Mesh (Istio)
+- **Gateway**: External traffic entry point
+- **Virtual Service**: Traffic routing rules
+- **Destination Rule**: Load balancing and connection pooling
+- **Canary Deployment**: Traffic splitting for gradual rollouts
+
+### Architecture Diagram
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │                    Istio Gateway                            │
 ├─────────────────────────────────────────────────────────────┤
-│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐        │
-│  │   Ecommerce │  │   MongoDB   │  │  Prometheus │        │
-│  │     App     │  │   Service   │  │   Service   │        │
-│  │  (3 replicas)│  │ (1 replica) │  │ (1 replica) │        │
-│  └─────────────┘  └─────────────┘  └─────────────┘        │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐          │
+│  │   Ecommerce │  │   MongoDB   │  │  Prometheus │          │
+│  │     App     │  │   Service   │  │   Service   │          │
+│  │ (1-2 replicas)│  │ (1 replica) │  │ (1 replica) │          │
+│  └─────────────┘  └─────────────┘  └─────────────┘          │
 ├─────────────────────────────────────────────────────────────┤
-│                    Grafana Dashboard                       │
+│                    Grafana Dashboard                        │
+│                  (Port 3001 - No Conflicts)                │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -36,27 +68,37 @@ A modern, scalable ecommerce application built with Next.js, MongoDB, and deploy
 - Kubernetes cluster (kubeadm)
 - kubectl
 - kustomize
-- Docker Hub account
+- Docker Hub account (`tohidazure`)
 
 ### Setup Installation (Ubuntu)
 ```bash
 # Install all necessary software for Ubuntu
-chmod +x setup.sh
-./setup.sh
+chmod +x scripts/instance-setup.sh
+sudo ./scripts/instance-setup.sh
 
-# Setup Kubernetes cluster with kubeadm
-sudo ./scripts/setup-kubeadm-cluster.sh
+# This will install:
+# - Docker & containerd
+# - Kubernetes (kubeadm, kubectl, kubelet)
+# - Flannel CNI
+# - Metrics server
+# - System optimizations
 ```
 
 ### Local Development
 ```bash
-# Install dependencies
+# Start all services with Docker Compose
+docker-compose up -d
+
+# Access services:
+# - E-commerce App: http://localhost:3000
+# - Grafana: http://localhost:3001 (admin/admin123)
+# - Prometheus: http://localhost:9090
+# - MongoDB: localhost:27017
+
+# Or run Next.js directly
+cd ecommerce-app
 npm install
-
-# Start development server
 npm run dev
-
-# Open http://localhost:3000
 ```
 
 ### Docker Hub Integration
@@ -64,120 +106,151 @@ npm run dev
 #### 1. Build and Push Images (On Instance)
 ```bash
 # Build the application
-docker build -t your-dockerhub-username/dashing-ecommerce:latest .
+docker build -t tohidazure/k8s-ecommerce:latest .
 
-# Tag for different environments
-docker tag your-dockerhub-username/dashing-ecommerce:latest your-dockerhub-username/dashing-ecommerce:v1.0.0
-docker tag your-dockerhub-username/dashing-ecommerce:latest your-dockerhub-username/dashing-ecommerce:v1.0.0-staging
-docker tag your-dockerhub-username/dashing-ecommerce:latest your-dockerhub-username/dashing-ecommerce:v1.1.0-canary
+# Login to Docker Hub
+docker login
 
 # Push to Docker Hub
-docker push your-dockerhub-username/dashing-ecommerce:v1.0.0
-docker push your-dockerhub-username/dashing-ecommerce:v1.0.0-staging
-docker push your-dockerhub-username/dashing-ecommerce:v1.1.0-canary
+docker push tohidazure/k8s-ecommerce:latest
 ```
 
-#### 2. Update Versions in Manifests
+#### 2. Deploy to Kubernetes
 ```bash
-# Windows
-scripts\update-version.bat production v1.0.0
-scripts\update-version.bat staging v1.0.0-staging
-scripts\update-version.bat canary v1.1.0-canary
+# Create namespace
+kubectl create namespace ecommerce
 
-# Linux/Mac
-chmod +x scripts/update-version.sh
-./scripts/update-version.sh production v1.0.0
-./scripts/update-version.sh staging v1.0.0-staging
-./scripts/update-version.sh canary v1.1.0-canary
+# Deploy base configuration
+kubectl apply -f k8s/base/
+
+# Deploy monitoring
+kubectl apply -f monitoring/
+
+# Deploy dashboard configuration
+kubectl apply -f monitoring/grafana-dashboard-config.yaml
 ```
 
 ### Kubernetes Deployment
 
 #### 1. Deploy to Staging
 ```bash
-# Windows
-scripts\deploy.bat deploy-staging
+# Deploy staging environment
+kubectl apply -k k8s/overlays/staging/
 
-# Linux/Mac
-chmod +x scripts/deploy.sh
-./scripts/deploy.sh deploy-staging
+# Check staging deployment
+kubectl get pods -n ecommerce
 ```
 
 #### 2. Deploy to Production
 ```bash
-# Windows
-scripts\deploy.bat deploy-production
+# Deploy production environment
+kubectl apply -k k8s/overlays/production/
 
-# Linux/Mac
-./scripts/deploy.sh deploy-production
+# Check production deployment
+kubectl get pods -n ecommerce
 ```
 
 #### 3. Canary Deployment
 ```bash
 # Deploy canary version
-kustomize build k8s/overlays/canary | kubectl apply -f -
+kubectl apply -k k8s/overlays/canary/
 
 # Apply canary traffic rules
 kubectl apply -f k8s/istio/canary-virtual-service.yaml
 kubectl apply -f k8s/istio/canary-destination-rule.yaml
+
+# Check canary deployment
+kubectl get pods -n ecommerce
 ```
 
-#### 4. Check Status
+#### 4. Verify Deployment
 ```bash
-# Windows
-scripts\deploy.bat status
+# Check all pods are running
+kubectl get pods -n ecommerce
 
-# Linux/Mac
-./scripts/deploy.sh status
+# Check services
+kubectl get services -n ecommerce
+
+# Check if everything is healthy
+kubectl get pods -n ecommerce -o wide
+```
+
+#### 5. Access Your Application
+```bash
+# Access e-commerce app
+kubectl port-forward -n ecommerce svc/ecommerce-service 3000:3000
+# Visit: http://localhost:3000
+
+# Access Grafana dashboard
+kubectl port-forward -n ecommerce svc/grafana-service 3001:3001
+# Visit: http://localhost:3001 (admin/admin123)
 ```
 
 ## 📁 Project Structure
 
 ```
-dashing-ecommerce/
-├── app/                          # Next.js app directory
-│   ├── api/                      # API routes
-│   ├── auth/                     # Authentication pages
-│   ├── cart/                     # Shopping cart
-│   ├── categories/               # Product categories
-│   ├── product/                  # Product pages
-│   └── profile/                  # User profile
-├── components/                   # React components
-│   ├── BannerSlider/            # Homepage banner
-│   ├── Category/                # Category display
-│   ├── FeatureProducts/         # Featured products
-│   ├── Header/                  # Navigation header
-│   └── ProductCards/            # Product cards
+k8s-ecommerce/
+├── ecommerce-app/               # Next.js application
+│   ├── app/                     # App Router directory
+│   │   ├── api/                 # API routes (auth, health)
+│   │   ├── auth/                # Authentication pages
+│   │   ├── cart/                # Shopping cart
+│   │   ├── categories/          # Product categories
+│   │   ├── product/             # Product pages
+│   │   └── profile/             # User profile
+│   ├── components/              # React components
+│   │   ├── BannerSlider/        # Homepage banner
+│   │   ├── Category/            # Category display
+│   │   ├── FeatureProducts/     # Featured products
+│   │   ├── Header/              # Navigation header
+│   │   └── ProductCards/        # Product cards
+│   ├── lib/                     # Database connection
+│   └── public/                  # Static assets
 ├── k8s/                         # Kubernetes manifests
 │   ├── base/                    # Base configurations
+│   │   ├── ecommerce-deployment.yaml
+│   │   ├── mongodb-deployment.yaml
+│   │   ├── configmap.yaml
+│   │   └── hpa.yaml
 │   ├── overlays/                # Environment-specific configs
 │   │   ├── production/          # Production settings
-│   │   └── staging/             # Staging settings
+│   │   ├── staging/             # Staging settings
+│   │   └── canary/              # Canary deployment
 │   └── istio/                   # Service mesh config
+│       ├── gateway.yaml
+│       ├── virtual-service.yaml
+│       └── destination-rule.yaml
 ├── monitoring/                  # Monitoring stack
 │   ├── prometheus-deployment.yaml
-│   └── grafana-deployment.yaml
+│   ├── grafana-deployment.yaml
+│   ├── grafana-dashboard-config.yaml
+│   └── grafana-dashboard.json
 ├── scripts/                     # Deployment scripts
-│   ├── deploy.sh               # Linux/Mac deployment
-│   └── deploy.bat              # Windows deployment
-├── Dockerfile                   # Container image
-└── README.md                   # This file
+│   ├── local-dev.sh            # Local development
+│   └── instance-setup.sh       # Server setup
+├── docker-compose.yml          # Local development
+├── Dockerfile                  # Production container
+├── Dockerfile.local           # Local development container
+├── DEPLOYMENT.md              # Detailed deployment guide
+└── README.md                  # This file
 ```
 
 ## 🔧 Configuration
 
 ### Environment Variables
 - `NEXTAUTH_URL`: Authentication callback URL
-- `NEXTAUTH_SECRET`: JWT secret key
+- `NEXTAUTH_SECRET`: JWT secret key (auto-generated)
 - `MONGODB_URI`: MongoDB connection string
 - `NODE_ENV`: Environment (development/staging/production)
 
 ### Kubernetes Resources
-- **Namespace**: `ecommerce`
-- **ConfigMap**: Environment configuration
-- **Deployments**: App and database
-- **Services**: Internal service discovery
-- **PVCs**: Persistent storage for MongoDB and monitoring
+- **Namespace**: `ecommerce` (isolated environment)
+- **ConfigMap**: Environment configuration and secrets
+- **Deployments**: E-commerce app, MongoDB, Prometheus, Grafana
+- **Services**: ClusterIP services for internal communication
+- **PVCs**: Persistent storage for MongoDB and Grafana data
+- **HPA**: Auto-scaling based on CPU (80%) and Memory (85%)
+- **Health Checks**: Liveness, Readiness, and Startup probes
 
 ## 📊 Monitoring & Observability
 
@@ -188,42 +261,65 @@ dashing-ecommerce/
 - Custom business metrics
 
 ### Grafana Dashboards
-- Application performance
-- Database performance
-- Kubernetes cluster health
-- Business metrics (orders, users, etc.)
+- **E-commerce Application Dashboard** (auto-provisioned)
+- Application health monitoring
+- HTTP request rate and response time
+- Error rate tracking (4xx/5xx)
+- Active user sessions
+- Database connection monitoring
 
 ### Access Monitoring
 ```bash
 # Port forward to access Grafana
-kubectl port-forward -n ecommerce svc/grafana-service 3000:3000
+kubectl port-forward -n ecommerce svc/grafana-service 3001:3001
 
-# Access Grafana at http://localhost:3000
+# Access Grafana at http://localhost:3001
 # Username: admin
 # Password: admin123
+# Dashboard: "E-commerce Application Dashboard"
 ```
 
 ## 🌐 Service Access
 
 | Service | URL | Description |
 |---------|-----|-------------|
-| Ecommerce App | http://localhost:3000 | Main application |
-| Grafana | http://localhost:3000 (port-forward) | Monitoring dashboard |
+| E-commerce App | http://localhost:3000 | Main application with dummy auth |
+| Grafana | http://localhost:3001 (port-forward) | Monitoring dashboard |
 | Prometheus | http://localhost:9090 (port-forward) | Metrics collection |
+| MongoDB | localhost:27017 | Database (internal) |
+
+### Authentication
+- **Type**: Dummy Authentication (NextAuth.js)
+- **Credentials**: Use any email and password
+- **Features**: User profile, session management, sign-out
 
 ## 🔄 Deployment Strategies
 
+### Local Development
+- Docker Compose setup
+- Hot reload enabled
+- Debug logging
+- Local MongoDB instance
+
 ### Staging Environment
-- 2 replicas
-- Reduced resources
+- 1-2 replicas
+- Reduced resources (optimized for testing)
 - Debug logging enabled
 - Separate MongoDB database
+- Testing environment
 
 ### Production Environment
-- 5 replicas
-- High resource allocation
+- 1-2 replicas (optimized for t2.medium)
+- Resource limits: 256Mi memory, 200m CPU
 - Production logging
-- Optimized performance
+- Persistent storage
+- Auto-scaling enabled
+
+### Canary Deployment
+- Gradual traffic rollout (10% → 50% → 100%)
+- A/B testing capabilities
+- Quick rollback if issues detected
+- Istio traffic splitting
 
 ## 🛡️ Security Features
 
@@ -232,6 +328,8 @@ kubectl port-forward -n ecommerce svc/grafana-service 3000:3000
 - **RBAC**: Role-based access control
 - **Secrets Management**: Secure credential storage
 - **Image Security**: Non-root containers
+- **Dummy Authentication**: No external OAuth dependencies
+- **Health Checks**: Comprehensive application monitoring
 
 ## 📈 Scaling
 
@@ -246,21 +344,27 @@ spec:
     apiVersion: apps/v1
     kind: Deployment
     name: ecommerce-app
-  minReplicas: 3
-  maxReplicas: 10
+  minReplicas: 1
+  maxReplicas: 2
   metrics:
   - type: Resource
     resource:
       name: cpu
       target:
         type: Utilization
-        averageUtilization: 70
+        averageUtilization: 80
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 85
 ```
 
-### Vertical Pod Autoscaler (VPA)
-- Automatic resource adjustment
-- Memory and CPU optimization
-- Cost-effective resource usage
+### Resource Optimization
+- **Optimized for t2.medium**: Memory and CPU limits configured
+- **Efficient scaling**: 1-2 replicas based on load
+- **Cost-effective**: Minimal resource usage
 
 ## 🔧 Troubleshooting
 
@@ -285,32 +389,34 @@ spec:
    ```
 
 ### Health Checks
-- **Liveness Probe**: Ensures container is running
-- **Readiness Probe**: Ensures container is ready to serve traffic
-- **Startup Probe**: Handles slow-starting containers
+- **Liveness Probe**: `/api/health` endpoint
+- **Readiness Probe**: `/api/health` endpoint
+- **Startup Probe**: `/api/health` endpoint
+- **Health Check**: 30s interval, 3 retries
 
 ## 🚀 Production Deployment
 
 ### Prerequisites
-- Kubernetes cluster with Istio
-- Persistent volume provisioner
-- Load balancer or ingress controller
-- SSL/TLS certificates
+- Ubuntu 20.04+ server
+- t2.medium instance or better
+- Root access
+- Docker Hub account (`tohidazure`)
 
 ### Deployment Steps
-1. Build and push Docker image to registry
-2. Update image tags in kustomization files
-3. Deploy using production overlay
-4. Configure monitoring and alerting
-5. Set up backup and disaster recovery
+1. **Setup Instance**: Run `scripts/instance-setup.sh`
+2. **Build & Push**: `docker build -t tohidazure/k8s-ecommerce:latest .`
+3. **Deploy K8s**: `kubectl apply -f k8s/base/`
+4. **Deploy Monitoring**: `kubectl apply -f monitoring/`
+5. **Verify**: Check all pods are running
+6. **Access**: Port-forward to access services
 
 ## 📝 Development
 
 ### Adding New Features
-1. Develop locally with `npm run dev`
-2. Test with staging deployment
+1. Develop locally with `docker-compose up -d`
+2. Test authentication with dummy credentials
 3. Create feature branch
-4. Deploy to staging for testing
+4. Test with Kubernetes deployment
 5. Merge to main and deploy to production
 
 ### Database Migrations
@@ -340,4 +446,33 @@ For support and questions:
 
 ---
 
-**Built with ❤️ using Next.js, Kubernetes, and Istio**
+**Built with ❤️ using Next.js, Kubernetes, Istio, and comprehensive monitoring**
+
+## 🎯 Key Features Implemented
+
+### ✅ **Application Features**
+- **Dummy Authentication**: Simple email/password login (any credentials work)
+- **User Profile**: Complete profile page with avatar and user info
+- **Product Catalog**: Browse products and categories
+- **Shopping Cart**: Cart functionality with fake data
+- **Health Monitoring**: `/api/health` endpoint for Kubernetes probes
+
+### ✅ **Kubernetes Implementation**
+- **Single-node cluster** with kubeadm
+- **Flannel CNI** for pod networking
+- **Istio service mesh** for traffic management
+- **Auto-scaling** with HPA (1-2 replicas)
+- **Resource optimization** for t2.medium instances
+- **Persistent storage** for MongoDB and Grafana
+
+### ✅ **Monitoring & Observability**
+- **Prometheus** for metrics collection
+- **Grafana** with pre-configured e-commerce dashboard
+- **Health checks** for all services
+- **Port conflict resolution** (Grafana: 3001, App: 3000)
+
+### ✅ **DevOps & CI/CD**
+- **Docker Hub integration** (`tohidazure/k8s-ecommerce`)
+- **Automated deployment scripts**
+- **Environment-specific configurations**
+- **Local development** with Docker Compose

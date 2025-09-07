@@ -1,23 +1,35 @@
-import clientPromise from "@/lib/db";
-import { MongoDBAdapter } from "@auth/mongodb-adapter";
 import NextAuth from "next-auth";
-import GoogleProvider from "next-auth/providers/google";
+import CredentialsProvider from "next-auth/providers/credentials";
 
 export const authOptions = {
   pages: {
     signIn: "/auth/signin",
     signOut: "/auth/signout",
   },
-
-  adapter: MongoDBAdapter(clientPromise),
   session: {
-    strategy: "jwt",
+    strategy: "jwt" as const,
   },
   secret: process.env.NEXTAUTH_SECRET,
   providers: [
-    GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID || "",
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
+    CredentialsProvider({
+      name: "credentials",
+      credentials: {
+        email: { label: "Email", type: "email" },
+        password: { label: "Password", type: "password" }
+      },
+      async authorize(credentials) {
+        // Dummy authentication - accept any email/password
+        if (credentials?.email && credentials?.password) {
+          return {
+            id: "1",
+            email: credentials.email,
+            name: credentials.email.split('@')[0],
+            image: "https://via.placeholder.com/150/3958D8/FFFFFF?text=User",
+            role: "user"
+          };
+        }
+        return null;
+      }
     }),
   ],
   callbacks: {
@@ -26,33 +38,20 @@ export const authOptions = {
         session.user.id = token.id;
         session.user.name = token.name;
         session.user.email = token.email;
-        session.user.image = token.picture;
-        session.user.role = token.role;
+        session.user.image = token.image;
+        session.user.role = token.role || "user";
       }
-
       return session;
     },
     async jwt({ token, user }: any) {
-      const client = await clientPromise;
-      const db = client.db("test");
-      const dbUser = await db.collection("users").findOne({
-        email: token.email,
-      });
-
-      if (!dbUser) {
-        if (user) {
-          token.id = user?.id;
-        }
-        return token;
+      if (user) {
+        token.id = user.id;
+        token.name = user.name;
+        token.email = user.email;
+        token.image = user.image;
+        token.role = user.role;
       }
-
-      return {
-        id: dbUser.id,
-        name: dbUser.name,
-        email: dbUser.email,
-        picture: dbUser.image,
-        role: dbUser.role ? dbUser.role : "user",
-      };
+      return token;
     },
   },
 };

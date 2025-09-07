@@ -1,4 +1,5 @@
 import Header from '@/components/Header'
+import Providers from '@/components/Providers'
 import type { Metadata } from 'next'
 import { Frank_Ruhl_Libre } from 'next/font/google'
 import './globals.css'
@@ -33,9 +34,10 @@ export default function RootLayout({
 />
       </head>
       <body  className={frank_Ruhl_Libre.className}>
-         
+        <Providers>
           <Header/>
-        {children}
+          {children}
+        </Providers>
       </body>
     </html>
   )

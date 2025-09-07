@@ -5,6 +5,6 @@ metadata:
   namespace: ecommerce
 data:
   NEXTAUTH_URL: "http://localhost:3000"
-  NEXTAUTH_SECRET: "your-secret-key-here"
+  NEXTAUTH_SECRET: "0TKLooBw+GM3z8vh9YDF+StDicONjHzJ01tod2XKb4U="
   MONGODB_URI: "mongodb://mongodb-service:27017/ecommerce"
   NODE_ENV: "production"

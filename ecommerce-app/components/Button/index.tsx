@@ -7,7 +7,7 @@ export default function Button({type}:{type:string}) {
     {
         type==='signout' ? <button onClick={()=>signOut()}>
             SignOut
-        </button> : <button onClick={()=>signIn("google",{ callbackUrl: '/' })}>SignIn</button>
+        </button> : <button onClick={()=>signIn("credentials",{ callbackUrl: '/profile' })}>SignIn</button>
     }</>
   )
 }
