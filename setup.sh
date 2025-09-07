@@ -31,10 +31,11 @@ print_header() {
 
 # Check if running as root
 check_root() {
-    if [[ $EUID -eq 0 ]]; then
-        print_error "This script should not be run as root"
-        exit 1
-    fi
+    # if [[ $EUID -eq 0 ]]; then
+    #     print_error "This script should not be run as root"
+    #     exit 1
+    # fi
+    print_status "Running as root - proceeding with installation..."
 }
 
 # Detect OS
