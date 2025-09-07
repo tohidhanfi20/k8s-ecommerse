@@ -23,8 +23,6 @@ spec:
         volumeMounts:
         - name: prometheus-config
           mountPath: /etc/prometheus
-        - name: prometheus-data
-          mountPath: /prometheus
         resources:
           requests:
             memory: "128Mi"
@@ -36,9 +34,6 @@ spec:
       - name: prometheus-config
         configMap:
           name: prometheus-config
-      - name: prometheus-data
-        persistentVolumeClaim:
-          claimName: prometheus-pvc
 ---
 apiVersion: v1
 kind: Service
@@ -80,17 +75,3 @@ data:
         static_configs:
           - targets: ['mongodb-service:27017']
         scrape_interval: 30s
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: prometheus-pvc
-  namespace: ecommerce
-  labels:
-    app: prometheus
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 5Gi
