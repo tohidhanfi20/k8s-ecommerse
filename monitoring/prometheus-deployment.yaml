@@ -73,5 +73,6 @@ data:
         scrape_interval: 30s
       - job_name: 'mongodb'
         static_configs:
-          - targets: ['mongodb-service:27017']
+          - targets: ['mongodb-service:9216']
+        metrics_path: '/metrics'
         scrape_interval: 30s

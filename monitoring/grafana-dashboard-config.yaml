@@ -129,7 +129,7 @@ data:
           },
           {
             "id": 6,
-            "title": "Database Connections",
+            "title": "MongoDB Connections",
             "type": "graph",
             "targets": [
               {
