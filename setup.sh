@@ -172,21 +172,23 @@ install_kubeadm() {
         "debian")
             sudo apt-get update
             sudo apt-get install -y apt-transport-https ca-certificates curl
-            sudo curl -fsSLo /usr/share/keyrings/kubernetes-archive-keyring.gpg https://packages.cloud.google.com/apt/doc/apt-key.gpg
-            echo "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
+            # Add Kubernetes GPG key
+            curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.29/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+            # Add Kubernetes repository
+            echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.29/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
             sudo apt-get update
             sudo apt-get install -y kubelet kubeadm kubectl
             sudo apt-mark hold kubelet kubeadm kubectl
             ;;
         "redhat")
+            # Add Kubernetes repository for RHEL/CentOS
             cat <<EOF | sudo tee /etc/yum.repos.d/kubernetes.repo
 [kubernetes]
 name=Kubernetes
-baseurl=https://packages.cloud.google.com/yum/repos/kubernetes-el7-\$basearch
+baseurl=https://pkgs.k8s.io/core:/stable:/v1.29/rpm/
 enabled=1
 gpgcheck=1
-repo_gpgcheck=1
-gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+gpgkey=https://pkgs.k8s.io/core:/stable:/v1.29/rpm/repodata/repomd.xml.key
 EOF
             sudo yum install -y kubelet kubeadm kubectl
             sudo systemctl enable kubelet
