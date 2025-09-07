@@ -142,10 +142,17 @@ sed -i 's|tohidazure/k8s-ecommerce:latest|tohidazure/k8s-ecommerce:latest|g' k8s
 kubectl create namespace ecommerce
 
 # Deploy base configuration
-kubectl apply -f k8s/base/
+# Apply each file individually (recommended)
+kubectl apply -f k8s/base/namespace.yaml
+kubectl apply -f k8s/base/configmap.yaml
+kubectl apply -f k8s/base/mongodb-deployment.yaml
+kubectl apply -f k8s/base/ecommerce-deployment.yaml
+kubectl apply -f k8s/base/hpa.yaml
 
-# Deploy monitoring
-kubectl apply -f monitoring/
+# Deploy monitoring (apply only Kubernetes manifests)
+kubectl apply -f monitoring/grafana-deployment.yaml
+kubectl apply -f monitoring/grafana-dashboard-config.yaml
+kubectl apply -f monitoring/prometheus-deployment.yaml
 
 # Check deployment status
 kubectl get pods -n ecommerce

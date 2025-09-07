@@ -8,7 +8,5 @@ resources:
 - ecommerce-deployment.yaml
 - hpa.yaml
 
-commonLabels:
-  app.kubernetes.io/name: dashing-ecommerce
-  app.kubernetes.io/version: v1.0.0
-  app.kubernetes.io/component: ecommerce-app
+# Note: commonLabels can cause selector conflicts with existing deployments
+# Use individual file application instead: kubectl apply -f k8s/base/
