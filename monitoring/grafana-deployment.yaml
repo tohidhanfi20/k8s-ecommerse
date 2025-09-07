@@ -25,6 +25,10 @@ spec:
           value: "admin123"
         - name: GF_INSTALL_PLUGINS
           value: "grafana-piechart-panel"
+        - name: GF_SERVER_HTTP_PORT
+          value: "3001"
+        - name: GF_SERVER_HTTP_ADDRESS
+          value: "0.0.0.0"
         volumeMounts:
         - name: grafana-config
           mountPath: /etc/grafana/provisioning/datasources

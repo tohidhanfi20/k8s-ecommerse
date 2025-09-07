@@ -163,11 +163,29 @@ kubectl wait --for=condition=ready pod -l app=mongodb -n ecommerce --timeout=300
 ```
 
 ### Step 5: Access Application
+
+#### Option 1: Port Forward (Local Access)
 ```bash
 # Port forward to access the app
 kubectl port-forward -n ecommerce svc/ecommerce-service 3000:3000
 
 # Access at: http://localhost:3000
+```
+
+#### Option 2: NodePort (External Access)
+```bash
+# Convert services to NodePort for external access
+kubectl patch service ecommerce-service -n ecommerce -p '{"spec":{"type":"NodePort"}}'
+kubectl patch service grafana-service -n ecommerce -p '{"spec":{"type":"NodePort"}}'
+kubectl patch service prometheus-service -n ecommerce -p '{"spec":{"type":"NodePort"}}'
+
+# Get NodePort numbers
+kubectl get services -n ecommerce
+
+# Access via: http://YOUR_INSTANCE_IP:NODEPORT
+# E-commerce: Port 3000
+# Grafana: Port 3001 (configured with GF_SERVER_HTTP_PORT=3001)
+# Prometheus: Port 9090
 ```
 
 ### Step 6: Verify Everything is Working
@@ -180,6 +198,44 @@ kubectl logs -n ecommerce -l app=ecommerce-app
 
 # Check resource usage
 kubectl top pods -n ecommerce
+```
+
+## 🔧 Troubleshooting
+
+### Common Issues
+
+#### 1. Containerd CRI Error
+```bash
+# If you get "container runtime is not running" error
+sudo systemctl stop containerd
+sudo mkdir -p /etc/containerd
+sudo containerd config default | sudo tee /etc/containerd/config.toml
+sudo sed -i 's/SystemdCgroup = false/SystemdCgroup = true/g' /etc/containerd/config.toml
+sudo systemctl restart containerd
+sudo systemctl enable containerd
+```
+
+#### 2. MongoDB OOMKilled
+```bash
+# If MongoDB keeps crashing due to memory
+kubectl delete deployment mongodb -n ecommerce
+kubectl apply -f k8s/base/mongodb-deployment.yaml
+```
+
+#### 3. Grafana Port Conflict
+```bash
+# Grafana is configured to use port 3001 to avoid conflict with e-commerce app
+# If Grafana still uses port 3000, restart the deployment
+kubectl rollout restart deployment/grafana -n ecommerce
+```
+
+#### 4. Metrics Server Issues
+```bash
+# If metrics server fails, apply the fixed version
+kubectl delete -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+kubectl apply -f - <<EOF
+# [Use the fixed metrics-server configuration from earlier]
+EOF
 ```
 
 ## 🔧 Configuration
