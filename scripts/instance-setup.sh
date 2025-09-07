@@ -52,12 +52,16 @@ apt-get install -y \
     unzip \
     jq
 
-# Install containerd (not Docker)
-print_status "Installing containerd..."
+# Install Docker (needed for building images)
+print_status "Installing Docker..."
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
 echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
 apt-get update -y
-apt-get install -y containerd.io
+apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+
+# Start Docker
+systemctl start docker
+systemctl enable docker
 
 # Configure containerd for Kubernetes
 print_status "Configuring containerd for Kubernetes..."
@@ -71,8 +75,9 @@ sed -i 's/SystemdCgroup = false/SystemdCgroup = true/g' /etc/containerd/config.t
 systemctl restart containerd
 systemctl enable containerd
 
-# Verify containerd is working
-print_status "Verifying containerd configuration..."
+# Verify both Docker and containerd are working
+print_status "Verifying Docker and containerd configuration..."
+systemctl status docker --no-pager
 systemctl status containerd --no-pager
 
 # Install kubectl
@@ -277,9 +282,28 @@ kubectl get pods -A
 print_status "Instance setup completed successfully! 🎉"
 echo
 print_status "Next steps:"
-echo "1. Build Docker image: docker build -t tohidazure/k8s-ecommerce:latest ."
-echo "2. Push to Docker Hub: docker push tohidazure/k8s-ecommerce:latest"
-echo "3. Deploy application: kubectl apply -f k8s/base/"
-echo "4. Check status: kubectl get pods -n ecommerce"
+echo "1. Login to Docker Hub: docker login"
+echo "2. Build Docker image: docker build -t tohidazure/k8s-ecommerce:latest ."
+echo "3. Push to Docker Hub: docker push tohidazure/k8s-ecommerce:latest"
+echo "4. Deploy application:"
+echo "   kubectl apply -f k8s/base/namespace.yaml"
+echo "   kubectl apply -f k8s/base/configmap.yaml"
+echo "   kubectl apply -f k8s/base/mongodb-deployment.yaml"
+echo "   kubectl apply -f k8s/base/ecommerce-deployment.yaml"
+echo "   kubectl apply -f k8s/base/hpa.yaml"
+echo "5. Deploy monitoring:"
+echo "   kubectl apply -f monitoring/grafana-deployment.yaml"
+echo "   kubectl apply -f monitoring/grafana-dashboard-config.yaml"
+echo "   kubectl apply -f monitoring/prometheus-deployment.yaml"
+echo "6. Convert to NodePort for external access:"
+echo "   kubectl patch service ecommerce-service -n ecommerce -p '{\"spec\":{\"type\":\"NodePort\"}}'"
+echo "   kubectl patch service grafana-service -n ecommerce -p '{\"spec\":{\"type\":\"NodePort\"}}'"
+echo "   kubectl patch service prometheus-service -n ecommerce -p '{\"spec\":{\"type\":\"NodePort\"}}'"
+echo "7. Check status: kubectl get pods -n ecommerce"
+echo "8. Get NodePorts: kubectl get services -n ecommerce"
+echo
+print_status "Access your application at: http://YOUR_INSTANCE_IP:NODEPORT"
+print_status "Grafana: http://YOUR_INSTANCE_IP:GRAFANA_NODEPORT (admin/admin123)"
+print_status "Prometheus: http://YOUR_INSTANCE_IP:PROMETHEUS_NODEPORT"
 echo
 print_status "Happy deploying! 🚀"
