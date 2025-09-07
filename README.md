@@ -340,5 +340,4 @@ For support and questions:
 
 ---
 
-**Built with ❤️ using Next.js, Kubernetes, and Istio**#   k 8 s - e c o m m e r s e  
- 
+**Built with ❤️ using Next.js, Kubernetes, and Istio**
