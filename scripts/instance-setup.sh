@@ -297,7 +297,7 @@ echo "   kubectl wait --for=condition=ready pod -l app=mongodb -n ecommerce --ti
 echo "   kubectl apply -f k8s/base/prometheus-enhanced.yaml"
 echo "   kubectl apply -f k8s/base/ecommerce-deployment.yaml"
 echo "   kubectl apply -f monitoring/grafana-deployment.yaml"
-echo "   kubectl apply -f k8s/base/grafana-dashboard-configmap.yaml"
+echo "   # Grafana dashboard is now included in the main deployment file"
 echo "   kubectl apply -f k8s/base/metrics-server-simple.yaml"
 echo "   kubectl apply -f k8s/base/hpa.yaml"
 echo "   kubectl apply -f k8s/base/nodeport-services.yaml"

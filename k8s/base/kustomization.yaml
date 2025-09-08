@@ -7,7 +7,6 @@ resources:
 - mongodb-exporter-fixed.yaml
 - ecommerce-deployment.yaml
 - prometheus-enhanced.yaml
-- grafana-dashboard-configmap.yaml
 - hpa.yaml
 - nodeport-services.yaml
 - metrics-server-simple.yaml

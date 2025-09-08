@@ -182,7 +182,6 @@ kubectl apply -f k8s/base/prometheus-enhanced.yaml
 
 # Step 11: Deploy Grafana with comprehensive dashboard
 kubectl apply -f monitoring/grafana-deployment.yaml
-kubectl apply -f k8s/base/grafana-dashboard-configmap.yaml
 
 # Step 12: Check deployment status
 kubectl get pods -n ecommerce
@@ -252,7 +251,7 @@ kubectl apply -f k8s/base/hpa.yaml && \
 kubectl apply -f k8s/base/nodeport-services.yaml && \
 kubectl apply -f k8s/base/prometheus-enhanced.yaml && \
 kubectl apply -f monitoring/grafana-deployment.yaml && \
-kubectl apply -f k8s/base/grafana-dashboard-configmap.yaml && \
+# Grafana dashboard is now included in the main deployment file
 echo "Deployment completed! Check status with: kubectl get pods -n ecommerce"
 ```
 

@@ -93,6 +93,35 @@ The solution addresses common deployment challenges including port conflicts, me
 - **Metrics Verification**: Validated metrics collection and dashboard functionality
 - **Load Testing**: Tested auto-scaling behavior under load
 
+## Screenshots
+
+### Application Screenshots
+![E-commerce Homepage](assets/images/homepage.png)
+*E-commerce application homepage with product catalog*
+
+![Shopping Cart](assets/images/cart.png)
+*Shopping cart functionality with product management*
+
+![Payment Process](assets/images/payment.png)
+*Payment processing interface*
+
+### Infrastructure Screenshots
+![Infrastructure Overview](assets/images/infra.png)
+*Kubernetes cluster infrastructure and pod status*
+
+![Auto-scaling Configuration](assets/images/autoscaling.png)
+*Horizontal Pod Autoscaler (HPA) configuration and status*
+
+### Monitoring Screenshots
+![Prometheus Metrics](assets/images/prometheus.png)
+*Prometheus metrics collection and targets status*
+
+![Grafana Dashboard](assets/images/grafana.png)
+*Comprehensive Grafana monitoring dashboard*
+
+![All Services Status](assets/images/all.png)
+*Complete deployment status showing all running services*
+
 ## Conclusion
 
 The project successfully demonstrates a production-ready e-commerce application deployment on Kubernetes with comprehensive monitoring and auto-scaling capabilities. Key achievements include:
