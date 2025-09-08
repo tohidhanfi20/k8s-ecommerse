@@ -65,6 +65,14 @@ kubectl apply -f k8s/base/prometheus-enhanced.yaml
 print_status "Waiting for Prometheus to be ready..."
 kubectl wait --for=condition=available --timeout=300s deployment/prometheus -n ecommerce
 
+# Deploy e-commerce application
+print_status "Deploying e-commerce application..."
+kubectl apply -f k8s/base/ecommerce-deployment.yaml
+
+# Wait for e-commerce app to be ready
+print_status "Waiting for e-commerce application to be ready..."
+kubectl wait --for=condition=available --timeout=300s deployment/ecommerce-app -n ecommerce
+
 # Deploy Grafana with dashboard
 print_status "Deploying Grafana with comprehensive dashboard..."
 kubectl apply -f monitoring/grafana-deployment.yaml
@@ -80,7 +88,11 @@ kubectl apply -f k8s/base/metrics-server-simple.yaml
 
 # Wait for metrics server to be ready
 print_status "Waiting for metrics server to be ready..."
-kubectl wait --for=condition=available --timeout=300s deployment/metrics-server -n kube-system
+kubectl wait --for=condition=available --timeout=600s deployment/metrics-server -n kube-system
+
+# Deploy HPA
+print_status "Deploying HPA..."
+kubectl apply -f k8s/base/hpa.yaml
 
 # Deploy NodePort services for external access
 print_status "Deploying NodePort services for external access..."
