@@ -109,6 +109,9 @@ The solution addresses common deployment challenges including port conflicts, me
 ![Infrastructure Overview](assets/images/infra.png)
 *Kubernetes cluster infrastructure and pod status*
 
+![Instance Metrics](assets/images/instance.png)
+*AWS EC2 instance metrics showing CPU, memory, and network utilization*
+
 ![Auto-scaling Configuration](assets/images/autoscaling.png)
 *Horizontal Pod Autoscaler (HPA) configuration and status*
 
