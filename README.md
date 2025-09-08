@@ -631,6 +631,13 @@ For support and questions:
 
 **Built with ❤️ using Next.js, Kubernetes, Istio, and comprehensive monitoring**
 
+## 📄 Project Report
+
+**Download the complete project report (PDF):**
+[📊 E-commerce Kubernetes Project Report](https://drive.google.com/file/d/1CtE0sUTZmSVK9Qz44GYG0pTFdZXVnc8E/view?usp=sharing)
+
+*Comprehensive documentation including architecture, deployment steps, monitoring setup, and project analysis.*
+
 ## 🎯 Key Features Implemented
 
 ### ✅ **Application Features**
