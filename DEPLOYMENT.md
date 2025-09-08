@@ -166,16 +166,19 @@ kubectl apply -f monitoring/grafana-deployment.yaml
 kubectl apply -f monitoring/grafana-dashboard-config.yaml
 kubectl apply -f monitoring/prometheus-deployment.yaml
 
-# Step 6: Deploy HPA (after app is running)
+# Step 6: Deploy metrics server (required for HPA)
+kubectl apply -f k8s/base/metrics-server.yaml
+
+# Step 7: Deploy HPA (after app and metrics server are running)
 kubectl apply -f k8s/base/hpa.yaml
 
-# Step 7: Deploy NodePort services for external access
+# Step 8: Deploy NodePort services for external access
 kubectl apply -f k8s/base/nodeport-services.yaml
 
-# Step 8: Check deployment status
+# Step 9: Check deployment status
 kubectl get pods -n ecommerce
 
-# Step 9: Wait for e-commerce app to be ready
+# Step 10: Wait for e-commerce app to be ready
 kubectl wait --for=condition=ready pod -l app=ecommerce-app -n ecommerce --timeout=300s
 ```
 
@@ -239,6 +242,7 @@ kubectl apply -f k8s/base/ecommerce-deployment.yaml && \
 kubectl apply -f monitoring/grafana-deployment.yaml && \
 kubectl apply -f monitoring/grafana-dashboard-config.yaml && \
 kubectl apply -f monitoring/prometheus-deployment.yaml && \
+kubectl apply -f k8s/base/metrics-server.yaml && \
 kubectl apply -f k8s/base/hpa.yaml && \
 kubectl apply -f k8s/base/nodeport-services.yaml && \
 echo "Deployment completed! Check status with: kubectl get pods -n ecommerce"
@@ -291,11 +295,19 @@ kubectl rollout restart deployment/mongodb -n ecommerce
 
 #### 5. Metrics Server Issues
 ```bash
-# If metrics server fails, apply the fixed version
-kubectl delete -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
-kubectl apply -f - <<EOF
-# [Use the fixed metrics-server configuration from earlier]
-EOF
+# If metrics server fails, delete and reapply the local version
+kubectl delete -f k8s/base/metrics-server.yaml
+kubectl apply -f k8s/base/metrics-server.yaml
+
+# Check metrics server logs
+kubectl logs -n kube-system -l k8s-app=metrics-server
+
+# Verify metrics server is working
+kubectl top nodes
+kubectl top pods -n ecommerce
+
+# If still failing, check if the pod is running
+kubectl get pods -n kube-system -l k8s-app=metrics-server
 ```
 
 ## 🔧 Configuration

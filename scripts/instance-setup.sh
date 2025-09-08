@@ -265,9 +265,9 @@ kubectl wait --for=condition=ready pod -l app=flannel -n kube-flannel --timeout=
 print_status "Removing taint from master node..."
 kubectl taint nodes --all node-role.kubernetes.io/control-plane-
 
-# Install metrics server
+# Install metrics server (using local configuration)
 print_status "Installing metrics server..."
-kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+kubectl apply -f k8s/base/metrics-server.yaml
 
 # Wait for metrics server
 print_status "Waiting for metrics server to be ready..."
