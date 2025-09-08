@@ -167,7 +167,7 @@ kubectl apply -f monitoring/grafana-dashboard-config.yaml
 kubectl apply -f monitoring/prometheus-deployment.yaml
 
 # Step 6: Deploy metrics server (required for HPA)
-kubectl apply -f k8s/base/metrics-server.yaml
+kubectl apply -f k8s/base/metrics-server-simple.yaml
 
 # Step 7: Deploy HPA (after app and metrics server are running)
 kubectl apply -f k8s/base/hpa.yaml
@@ -242,7 +242,7 @@ kubectl apply -f k8s/base/ecommerce-deployment.yaml && \
 kubectl apply -f monitoring/grafana-deployment.yaml && \
 kubectl apply -f monitoring/grafana-dashboard-config.yaml && \
 kubectl apply -f monitoring/prometheus-deployment.yaml && \
-kubectl apply -f k8s/base/metrics-server.yaml && \
+kubectl apply -f k8s/base/metrics-server-simple.yaml && \
 kubectl apply -f k8s/base/hpa.yaml && \
 kubectl apply -f k8s/base/nodeport-services.yaml && \
 echo "Deployment completed! Check status with: kubectl get pods -n ecommerce"

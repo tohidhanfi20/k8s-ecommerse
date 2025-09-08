@@ -267,7 +267,7 @@ kubectl taint nodes --all node-role.kubernetes.io/control-plane-
 
 # Install metrics server (using local configuration)
 print_status "Installing metrics server..."
-kubectl apply -f k8s/base/metrics-server.yaml
+kubectl apply -f k8s/base/metrics-server-simple.yaml
 
 # Wait for metrics server
 print_status "Waiting for metrics server to be ready..."

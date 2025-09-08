@@ -8,7 +8,7 @@ resources:
 - ecommerce-deployment.yaml
 - hpa.yaml
 - nodeport-services.yaml
-- metrics-server.yaml
+- metrics-server-simple.yaml
 
 # Note: commonLabels can cause selector conflicts with existing deployments
 # Use individual file application instead: kubectl apply -f k8s/base/
