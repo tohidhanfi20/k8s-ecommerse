@@ -153,7 +153,7 @@ kubectl apply -f k8s/base/namespace.yaml
 kubectl apply -f k8s/base/configmap.yaml
 
 # Step 2: Deploy MongoDB first (database dependency)
-kubectl apply -f k8s/base/mongodb-deployment.yaml
+kubectl apply -f k8s/base/mongodb-simple.yaml
 
 # Step 3: Wait for MongoDB to be ready
 kubectl wait --for=condition=ready pod -l app=mongodb -n ecommerce --timeout=300s
@@ -236,7 +236,7 @@ cd k8s-ecommerse
 # Deploy everything in correct sequence with one command
 kubectl apply -f k8s/base/namespace.yaml && \
 kubectl apply -f k8s/base/configmap.yaml && \
-kubectl apply -f k8s/base/mongodb-deployment.yaml && \
+kubectl apply -f k8s/base/mongodb-simple.yaml && \
 kubectl wait --for=condition=ready pod -l app=mongodb -n ecommerce --timeout=300s && \
 kubectl apply -f k8s/base/ecommerce-deployment.yaml && \
 kubectl apply -f monitoring/grafana-deployment.yaml && \
