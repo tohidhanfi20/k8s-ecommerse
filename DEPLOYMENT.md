@@ -143,15 +143,8 @@ docker push tohidazure/k8s-ecommerce:latest
 # No changes needed - the image is already configured correctly
 ```
 
-### Step 5: Deploy Application with Comprehensive Monitoring
+### Step 5: Deploy Application (Complete Sequence)
 
-#### Option A: One-Command Deployment (Recommended)
-```bash
-# Use the comprehensive monitoring deployment script
-./scripts/deploy-monitoring.sh
-```
-
-#### Option B: Manual Deployment
 ```bash
 # Make sure you're in the project directory
 cd k8s-ecommerse
@@ -166,30 +159,30 @@ kubectl apply -f k8s/base/mongodb-exporter-fixed.yaml
 # Step 3: Wait for MongoDB to be ready
 kubectl wait --for=condition=ready pod -l app=mongodb -n ecommerce --timeout=600s
 
-# Step 4: Deploy enhanced Prometheus with comprehensive scraping
-kubectl apply -f k8s/base/prometheus-enhanced.yaml
-
-# Step 5: Deploy e-commerce application
+# Step 4: Deploy e-commerce application
 kubectl apply -f k8s/base/ecommerce-deployment.yaml
 
-# Step 6: Wait for e-commerce app to be ready
+# Step 5: Wait for e-commerce app to be ready
 kubectl wait --for=condition=available --timeout=300s deployment/ecommerce-app -n ecommerce
 
-# Step 7: Deploy Grafana with comprehensive dashboard
-kubectl apply -f monitoring/grafana-deployment.yaml
-kubectl apply -f k8s/base/grafana-dashboard-configmap.yaml
-
-# Step 8: Deploy metrics server (required for HPA)
+# Step 6: Deploy metrics server (required for HPA)
 kubectl apply -f k8s/base/metrics-server-simple.yaml
 
-# Step 9: Wait for metrics server to be ready
+# Step 7: Wait for metrics server to be ready
 kubectl wait --for=condition=available --timeout=600s deployment/metrics-server -n kube-system
 
-# Step 10: Deploy HPA (after app and metrics server are running)
+# Step 8: Deploy HPA (after app and metrics server are running)
 kubectl apply -f k8s/base/hpa.yaml
 
-# Step 11: Deploy NodePort services for external access
+# Step 9: Deploy NodePort services for external access
 kubectl apply -f k8s/base/nodeport-services.yaml
+
+# Step 10: Deploy monitoring AFTER all services are running
+kubectl apply -f k8s/base/prometheus-enhanced.yaml
+
+# Step 11: Deploy Grafana with comprehensive dashboard
+kubectl apply -f monitoring/grafana-deployment.yaml
+kubectl apply -f k8s/base/grafana-dashboard-configmap.yaml
 
 # Step 12: Check deployment status
 kubectl get pods -n ecommerce
@@ -251,15 +244,15 @@ kubectl apply -f k8s/base/namespace.yaml && \
 kubectl apply -f k8s/base/configmap.yaml && \
 kubectl apply -f k8s/base/mongodb-exporter-fixed.yaml && \
 kubectl wait --for=condition=ready pod -l app=mongodb -n ecommerce --timeout=600s && \
-kubectl apply -f k8s/base/prometheus-enhanced.yaml && \
 kubectl apply -f k8s/base/ecommerce-deployment.yaml && \
 kubectl wait --for=condition=available --timeout=300s deployment/ecommerce-app -n ecommerce && \
-kubectl apply -f monitoring/grafana-deployment.yaml && \
-kubectl apply -f k8s/base/grafana-dashboard-configmap.yaml && \
 kubectl apply -f k8s/base/metrics-server-simple.yaml && \
 kubectl wait --for=condition=available --timeout=600s deployment/metrics-server -n kube-system && \
 kubectl apply -f k8s/base/hpa.yaml && \
 kubectl apply -f k8s/base/nodeport-services.yaml && \
+kubectl apply -f k8s/base/prometheus-enhanced.yaml && \
+kubectl apply -f monitoring/grafana-deployment.yaml && \
+kubectl apply -f k8s/base/grafana-dashboard-configmap.yaml && \
 echo "Deployment completed! Check status with: kubectl get pods -n ecommerce"
 ```
 

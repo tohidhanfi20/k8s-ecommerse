@@ -57,14 +57,6 @@ kubectl apply -f k8s/base/mongodb-exporter-fixed.yaml
 print_status "Waiting for MongoDB to be ready..."
 kubectl wait --for=condition=available --timeout=300s deployment/mongodb -n ecommerce
 
-# Deploy enhanced Prometheus
-print_status "Deploying enhanced Prometheus with comprehensive scraping..."
-kubectl apply -f k8s/base/prometheus-enhanced.yaml
-
-# Wait for Prometheus to be ready
-print_status "Waiting for Prometheus to be ready..."
-kubectl wait --for=condition=available --timeout=300s deployment/prometheus -n ecommerce
-
 # Deploy e-commerce application
 print_status "Deploying e-commerce application..."
 kubectl apply -f k8s/base/ecommerce-deployment.yaml
@@ -72,15 +64,6 @@ kubectl apply -f k8s/base/ecommerce-deployment.yaml
 # Wait for e-commerce app to be ready
 print_status "Waiting for e-commerce application to be ready..."
 kubectl wait --for=condition=available --timeout=300s deployment/ecommerce-app -n ecommerce
-
-# Deploy Grafana with dashboard
-print_status "Deploying Grafana with comprehensive dashboard..."
-kubectl apply -f monitoring/grafana-deployment.yaml
-kubectl apply -f k8s/base/grafana-dashboard-configmap.yaml
-
-# Wait for Grafana to be ready
-print_status "Waiting for Grafana to be ready..."
-kubectl wait --for=condition=available --timeout=300s deployment/grafana -n ecommerce
 
 # Deploy metrics server
 print_status "Deploying metrics server..."
@@ -97,6 +80,23 @@ kubectl apply -f k8s/base/hpa.yaml
 # Deploy NodePort services for external access
 print_status "Deploying NodePort services for external access..."
 kubectl apply -f k8s/base/nodeport-services.yaml
+
+# Deploy monitoring AFTER all services are running
+print_status "Deploying monitoring stack..."
+kubectl apply -f k8s/base/prometheus-enhanced.yaml
+
+# Wait for Prometheus to be ready
+print_status "Waiting for Prometheus to be ready..."
+kubectl wait --for=condition=available --timeout=300s deployment/prometheus -n ecommerce
+
+# Deploy Grafana with dashboard
+print_status "Deploying Grafana with comprehensive dashboard..."
+kubectl apply -f monitoring/grafana-deployment.yaml
+kubectl apply -f k8s/base/grafana-dashboard-configmap.yaml
+
+# Wait for Grafana to be ready
+print_status "Waiting for Grafana to be ready..."
+kubectl wait --for=condition=available --timeout=300s deployment/grafana -n ecommerce
 
 # Get service URLs
 print_status "Getting service access URLs..."
