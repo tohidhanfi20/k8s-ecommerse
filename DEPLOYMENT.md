@@ -156,7 +156,7 @@ kubectl apply -f k8s/base/configmap.yaml
 kubectl apply -f k8s/base/mongodb-simple.yaml
 
 # Step 3: Wait for MongoDB to be ready
-kubectl wait --for=condition=ready pod -l app=mongodb -n ecommerce --timeout=300s
+kubectl wait --for=condition=ready pod -l app=mongodb -n ecommerce --timeout=600s
 
 # Step 4: Deploy e-commerce application
 kubectl apply -f k8s/base/ecommerce-deployment.yaml
@@ -237,7 +237,7 @@ cd k8s-ecommerse
 kubectl apply -f k8s/base/namespace.yaml && \
 kubectl apply -f k8s/base/configmap.yaml && \
 kubectl apply -f k8s/base/mongodb-simple.yaml && \
-kubectl wait --for=condition=ready pod -l app=mongodb -n ecommerce --timeout=300s && \
+kubectl wait --for=condition=ready pod -l app=mongodb -n ecommerce --timeout=600s && \
 kubectl apply -f k8s/base/ecommerce-deployment.yaml && \
 kubectl apply -f monitoring/grafana-deployment.yaml && \
 kubectl apply -f monitoring/grafana-dashboard-config.yaml && \

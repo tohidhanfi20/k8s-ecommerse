@@ -258,8 +258,8 @@ kubectl apply -f https://raw.githubusercontent.com/flannel-io/flannel/master/Doc
 
 # Wait for CNI
 print_status "Waiting for CNI to be ready..."
-sleep 30
-kubectl wait --for=condition=ready pod -l app=flannel -n kube-flannel --timeout=300s || true
+sleep 60
+kubectl wait --for=condition=ready pod -l app=flannel -n kube-flannel --timeout=600s || true
 
 # Remove taint
 print_status "Removing taint from master node..."
@@ -271,8 +271,8 @@ kubectl apply -f k8s/base/metrics-server-simple.yaml
 
 # Wait for metrics server
 print_status "Waiting for metrics server to be ready..."
-sleep 30
-kubectl wait --for=condition=ready pod -l k8s-app=metrics-server -n kube-system --timeout=300s || true
+sleep 60
+kubectl wait --for=condition=ready pod -l k8s-app=metrics-server -n kube-system --timeout=600s || true
 
 # Final verification
 print_status "Verifying installation..."

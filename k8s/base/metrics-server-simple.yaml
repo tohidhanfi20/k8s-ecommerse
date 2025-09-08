@@ -153,18 +153,21 @@ spec:
           name: https
           protocol: TCP
         readinessProbe:
-          failureThreshold: 5
+          failureThreshold: 10
           httpGet:
             path: /readyz
             port: https
             scheme: HTTPS
-          initialDelaySeconds: 60
-          periodSeconds: 20
-          timeoutSeconds: 15
+          initialDelaySeconds: 120
+          periodSeconds: 30
+          timeoutSeconds: 20
         resources:
           requests:
-            cpu: 100m
-            memory: 200Mi
+            cpu: 200m
+            memory: 512Mi
+          limits:
+            cpu: 500m
+            memory: 1Gi
         securityContext:
           allowPrivilegeEscalation: false
           capabilities:
