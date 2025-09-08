@@ -138,28 +138,35 @@ sed -i 's|tohidazure/k8s-ecommerce:latest|tohidazure/k8s-ecommerce:latest|g' k8s
 
 ### Step 4: Deploy Application
 ```bash
-# Create namespace
-kubectl create namespace ecommerce
-
-# Deploy base configuration
-# Apply each file individually (recommended)
+# Step 1: Create namespace and base configuration
 kubectl apply -f k8s/base/namespace.yaml
 kubectl apply -f k8s/base/configmap.yaml
-kubectl apply -f k8s/base/mongodb-deployment.yaml
-kubectl apply -f k8s/base/ecommerce-deployment.yaml
-kubectl apply -f k8s/base/hpa.yaml
 
-# Deploy monitoring (apply only Kubernetes manifests)
+# Step 2: Deploy MongoDB first (database dependency)
+kubectl apply -f k8s/base/mongodb-deployment.yaml
+
+# Step 3: Wait for MongoDB to be ready
+kubectl wait --for=condition=ready pod -l app=mongodb -n ecommerce --timeout=300s
+
+# Step 4: Deploy e-commerce application
+kubectl apply -f k8s/base/ecommerce-deployment.yaml
+
+# Step 5: Deploy monitoring services
 kubectl apply -f monitoring/grafana-deployment.yaml
 kubectl apply -f monitoring/grafana-dashboard-config.yaml
 kubectl apply -f monitoring/prometheus-deployment.yaml
 
-# Check deployment status
+# Step 6: Deploy HPA (after app is running)
+kubectl apply -f k8s/base/hpa.yaml
+
+# Step 7: Deploy NodePort services for external access
+kubectl apply -f k8s/base/nodeport-services.yaml
+
+# Step 8: Check deployment status
 kubectl get pods -n ecommerce
 
-# Wait for all pods to be ready
+# Step 9: Wait for e-commerce app to be ready
 kubectl wait --for=condition=ready pod -l app=ecommerce-app -n ecommerce --timeout=300s
-kubectl wait --for=condition=ready pod -l app=mongodb -n ecommerce --timeout=300s
 ```
 
 ### Step 5: Access Application
@@ -174,9 +181,7 @@ kubectl port-forward -n ecommerce svc/ecommerce-service 3000:3000
 
 #### Option 2: NodePort (External Access)
 ```bash
-# Deploy NodePort services for external access
-kubectl apply -f k8s/base/nodeport-services.yaml
-
+# NodePort services are already deployed in Step 7 above
 # Get NodePort numbers (auto-assigned by Kubernetes)
 kubectl get services -n ecommerce
 
@@ -196,11 +201,34 @@ kubectl get services -n ecommerce -o custom-columns="NAME:.metadata.name,TYPE:.s
 # Check all resources
 kubectl get all -n ecommerce
 
-# Check pod logs
+# Check pod status
+kubectl get pods -n ecommerce
+
+# Check services and their NodePorts
+kubectl get services -n ecommerce
+
+# Check pod logs if needed
 kubectl logs -n ecommerce -l app=ecommerce-app
+kubectl logs -n ecommerce -l app=mongodb
 
 # Check resource usage
 kubectl top pods -n ecommerce
+```
+
+### Alternative: One-Command Deployment
+```bash
+# Deploy everything in correct sequence with one command
+kubectl apply -f k8s/base/namespace.yaml && \
+kubectl apply -f k8s/base/configmap.yaml && \
+kubectl apply -f k8s/base/mongodb-deployment.yaml && \
+kubectl wait --for=condition=ready pod -l app=mongodb -n ecommerce --timeout=300s && \
+kubectl apply -f k8s/base/ecommerce-deployment.yaml && \
+kubectl apply -f monitoring/grafana-deployment.yaml && \
+kubectl apply -f monitoring/grafana-dashboard-config.yaml && \
+kubectl apply -f monitoring/prometheus-deployment.yaml && \
+kubectl apply -f k8s/base/hpa.yaml && \
+kubectl apply -f k8s/base/nodeport-services.yaml && \
+echo "Deployment completed! Check status with: kubectl get pods -n ecommerce"
 ```
 
 ## 🔧 Troubleshooting
