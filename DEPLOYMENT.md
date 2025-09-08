@@ -174,18 +174,21 @@ kubectl port-forward -n ecommerce svc/ecommerce-service 3000:3000
 
 #### Option 2: NodePort (External Access)
 ```bash
-# Convert services to NodePort for external access
-kubectl patch service ecommerce-service -n ecommerce -p '{"spec":{"type":"NodePort"}}'
-kubectl patch service grafana-service -n ecommerce -p '{"spec":{"type":"NodePort"}}'
-kubectl patch service prometheus-service -n ecommerce -p '{"spec":{"type":"NodePort"}}'
+# Deploy NodePort services for external access
+kubectl apply -f k8s/base/nodeport-services.yaml
 
-# Get NodePort numbers
+# Get NodePort numbers (auto-assigned by Kubernetes)
 kubectl get services -n ecommerce
 
+# Alternative: Get only NodePort services with their assigned ports
+kubectl get services -n ecommerce -o custom-columns="NAME:.metadata.name,TYPE:.spec.type,NODEPORT:.spec.ports[*].nodePort" | grep NodePort
+
 # Access via: http://YOUR_INSTANCE_IP:NODEPORT
-# E-commerce: Port 3000
-# Grafana: Port 3001 (configured with GF_SERVER_HTTP_PORT=3001)
-# Prometheus: Port 9090
+# E-commerce: http://YOUR_INSTANCE_IP:<AUTO_ASSIGNED_PORT>
+# Grafana: http://YOUR_INSTANCE_IP:<AUTO_ASSIGNED_PORT> (admin/admin123)
+# Prometheus: http://YOUR_INSTANCE_IP:<AUTO_ASSIGNED_PORT>
+# MongoDB: mongodb://YOUR_INSTANCE_IP:<AUTO_ASSIGNED_PORT>/ecommerce
+# Note: NodePorts are auto-assigned by Kubernetes (range: 30000-32767)
 ```
 
 ### Step 6: Verify Everything is Working
@@ -229,7 +232,23 @@ kubectl apply -f k8s/base/mongodb-deployment.yaml
 kubectl rollout restart deployment/grafana -n ecommerce
 ```
 
-#### 4. Metrics Server Issues
+#### 4. MongoDB Metrics Not Showing in Prometheus
+```bash
+# Check if MongoDB exporter is running
+kubectl get pods -n ecommerce -l app=mongodb
+
+# Check MongoDB exporter logs
+kubectl logs -n ecommerce -l app=mongodb -c mongodb-exporter
+
+# Verify MongoDB exporter is accessible
+kubectl port-forward -n ecommerce svc/mongodb-service 9216:9216
+# Then visit: http://localhost:9216/metrics
+
+# Restart MongoDB deployment if needed
+kubectl rollout restart deployment/mongodb -n ecommerce
+```
+
+#### 5. Metrics Server Issues
 ```bash
 # If metrics server fails, apply the fixed version
 kubectl delete -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml

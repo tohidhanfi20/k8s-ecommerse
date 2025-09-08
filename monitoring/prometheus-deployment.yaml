@@ -76,3 +76,4 @@ data:
           - targets: ['mongodb-service:9216']
         metrics_path: '/metrics'
         scrape_interval: 30s
+        scrape_timeout: 10s
