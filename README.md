@@ -634,7 +634,7 @@ For support and questions:
 ## 📄 Project Report
 
 **Download the complete project report (PDF):**
-[📊 E-commerce Kubernetes Project Report](https://drive.google.com/file/d/1CtE0sUTZmSVK9Qz44GYG0pTFdZXVnc8E/view?usp=sharing)
+[📊 E-commerce Kubernetes Project Report](https://drive.google.com/file/d/1WKvpH_zwqP3Vu6d7ir2XmDG_SOAQ-M1S/view?usp=sharing)
 
 *Comprehensive documentation including architecture, deployment steps, monitoring setup, and project analysis.*
 

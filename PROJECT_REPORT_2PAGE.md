@@ -116,3 +116,10 @@ The project serves as a comprehensive example of modern cloud-native application
 - **Alert Rules**: 6 critical system alerts
 - **Deployment Time**: ~5 minutes for complete stack
 - **Monitoring Coverage**: 100% of critical application and infrastructure metrics
+
+## 📄 Complete Project Report (PDF)
+
+**Download the comprehensive project report:**
+[📊 E-commerce Kubernetes Project Report - PDF](https://drive.google.com/file/d/1WKvpH_zwqP3Vu6d7ir2XmDG_SOAQ-M1S/view?usp=sharing)
+
+*This PDF contains the complete project documentation including detailed architecture diagrams, step-by-step deployment instructions, monitoring configuration, and comprehensive analysis of the Kubernetes e-commerce deployment.*
