@@ -143,7 +143,15 @@ docker push tohidazure/k8s-ecommerce:latest
 sed -i 's|tohidazure/k8s-ecommerce:latest|tohidazure/k8s-ecommerce:latest|g' k8s/base/ecommerce-deployment.yaml
 ```
 
-### Step 5: Deploy Application
+### Step 5: Deploy Application with Comprehensive Monitoring
+
+#### Option A: One-Command Deployment (Recommended)
+```bash
+# Use the comprehensive monitoring deployment script
+./scripts/deploy-monitoring.sh
+```
+
+#### Option B: Manual Deployment
 ```bash
 # Make sure you're in the project directory
 cd k8s-ecommerse
@@ -152,33 +160,35 @@ cd k8s-ecommerse
 kubectl apply -f k8s/base/namespace.yaml
 kubectl apply -f k8s/base/configmap.yaml
 
-# Step 2: Deploy MongoDB first (database dependency)
-kubectl apply -f k8s/base/mongodb-simple.yaml
+# Step 2: Deploy MongoDB with metrics exporter
+kubectl apply -f k8s/base/mongodb-exporter-fixed.yaml
 
 # Step 3: Wait for MongoDB to be ready
 kubectl wait --for=condition=ready pod -l app=mongodb -n ecommerce --timeout=600s
 
-# Step 4: Deploy e-commerce application
+# Step 4: Deploy enhanced Prometheus with comprehensive scraping
+kubectl apply -f k8s/base/prometheus-enhanced.yaml
+
+# Step 5: Deploy e-commerce application
 kubectl apply -f k8s/base/ecommerce-deployment.yaml
 
-# Step 5: Deploy monitoring services
+# Step 6: Deploy Grafana with comprehensive dashboard
 kubectl apply -f monitoring/grafana-deployment.yaml
-kubectl apply -f monitoring/grafana-dashboard-config.yaml
-kubectl apply -f monitoring/prometheus-deployment.yaml
+kubectl apply -f k8s/base/grafana-dashboard-configmap.yaml
 
-# Step 6: Deploy metrics server (required for HPA)
+# Step 7: Deploy metrics server (required for HPA)
 kubectl apply -f k8s/base/metrics-server-simple.yaml
 
-# Step 7: Deploy HPA (after app and metrics server are running)
+# Step 8: Deploy HPA (after app and metrics server are running)
 kubectl apply -f k8s/base/hpa.yaml
 
-# Step 8: Deploy NodePort services for external access
+# Step 9: Deploy NodePort services for external access
 kubectl apply -f k8s/base/nodeport-services.yaml
 
-# Step 9: Check deployment status
+# Step 10: Check deployment status
 kubectl get pods -n ecommerce
 
-# Step 10: Wait for e-commerce app to be ready
+# Step 11: Wait for e-commerce app to be ready
 kubectl wait --for=condition=ready pod -l app=ecommerce-app -n ecommerce --timeout=300s
 ```
 
@@ -228,7 +238,7 @@ kubectl logs -n ecommerce -l app=mongodb
 kubectl top pods -n ecommerce
 ```
 
-### Alternative: One-Command Deployment
+### Alternative: One-Command Manual Deployment
 ```bash
 # Make sure you're in the project directory
 cd k8s-ecommerse
@@ -236,12 +246,12 @@ cd k8s-ecommerse
 # Deploy everything in correct sequence with one command
 kubectl apply -f k8s/base/namespace.yaml && \
 kubectl apply -f k8s/base/configmap.yaml && \
-kubectl apply -f k8s/base/mongodb-simple.yaml && \
+kubectl apply -f k8s/base/mongodb-exporter-fixed.yaml && \
 kubectl wait --for=condition=ready pod -l app=mongodb -n ecommerce --timeout=600s && \
+kubectl apply -f k8s/base/prometheus-enhanced.yaml && \
 kubectl apply -f k8s/base/ecommerce-deployment.yaml && \
 kubectl apply -f monitoring/grafana-deployment.yaml && \
-kubectl apply -f monitoring/grafana-dashboard-config.yaml && \
-kubectl apply -f monitoring/prometheus-deployment.yaml && \
+kubectl apply -f k8s/base/grafana-dashboard-configmap.yaml && \
 kubectl apply -f k8s/base/metrics-server-simple.yaml && \
 kubectl apply -f k8s/base/hpa.yaml && \
 kubectl apply -f k8s/base/nodeport-services.yaml && \
@@ -289,8 +299,9 @@ kubectl logs -n ecommerce -l app=mongodb -c mongodb-exporter
 kubectl port-forward -n ecommerce svc/mongodb-service 9216:9216
 # Then visit: http://localhost:9216/metrics
 
-# Restart MongoDB deployment if needed
-kubectl rollout restart deployment/mongodb -n ecommerce
+# If using old MongoDB deployment, switch to enhanced version
+kubectl delete deployment mongodb -n ecommerce
+kubectl apply -f k8s/base/mongodb-exporter-fixed.yaml
 ```
 
 #### 5. Metrics Server Issues
@@ -324,18 +335,31 @@ kubectl get pods -n kube-system -l k8s-app=metrics-server
 - **Prometheus**: 128Mi-256Mi memory, 50m-200m CPU
 - **Grafana**: 64Mi-128Mi memory, 50m-100m CPU
 
-## 📊 Monitoring
+## 📊 Comprehensive Monitoring
+
+### Monitoring Features
+- **12-Panel Grafana Dashboard**: Application health, request rates, response times, error rates, MongoDB metrics, pod status, resource usage
+- **6 Alert Rules**: Critical system alerts for downtime, high error rates, resource usage
+- **Enhanced Prometheus**: Comprehensive scraping with Kubernetes, application, and database metrics
+- **MongoDB Exporter**: Real-time database metrics and connection monitoring
+- **Real-time Metrics**: 30-second refresh rate with auto-provisioned dashboards
 
 ### Access Monitoring
 ```bash
-# Grafana
+# Grafana Dashboard
 kubectl port-forward -n ecommerce svc/grafana-service 3001:3001
 # Access: http://localhost:3001 (admin/admin123)
-# Dashboard: "E-commerce Application Dashboard" (auto-provisioned)
+# Dashboard: "E-commerce Application - Comprehensive Monitoring" (auto-provisioned)
 
-# Prometheus
+# Prometheus Metrics
 kubectl port-forward -n ecommerce svc/prometheus-service 9090:9090
 # Access: http://localhost:9090
+# Check targets: http://localhost:9090/targets
+# Check alerts: http://localhost:9090/alerts
+
+# Application Metrics
+kubectl port-forward -n ecommerce svc/ecommerce-service 3000:3000
+# Access: http://localhost:3000/api/metrics
 ```
 
 ## 🔄 Scaling
@@ -428,9 +452,11 @@ The application uses a simple dummy authentication system that accepts any email
 - Resource limits configured
 
 ### Monitoring
-- Prometheus metrics collection
-- Grafana dashboards
-- Health check endpoints
+- **Prometheus**: Comprehensive metrics collection with 6 alert rules
+- **Grafana**: 12-panel dashboard with real-time monitoring
+- **MongoDB Exporter**: Database metrics and connection monitoring
+- **Application Metrics**: Custom business metrics via `/api/metrics`
+- **Health Check Endpoints**: Liveness, readiness, and startup probes
 
 ## 🆘 Support
 
