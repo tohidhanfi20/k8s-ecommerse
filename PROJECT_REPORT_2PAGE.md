@@ -70,7 +70,7 @@ The solution addresses common deployment challenges including port conflicts, me
 
 ### 5. Monitoring Implementation
 - **Prometheus Setup**: Deployed metrics collection with comprehensive scraping configuration
-- **Grafana Dashboards**: Created production-ready dashboards with 12+ panels
+- **Grafana Dashboards**: Created production-ready dashboards with 8+ panels
 - **MongoDB Exporter**: Integrated database metrics collection
 - **Alerting Rules**: Configured alerts for critical system metrics
 - **Metrics Server**: Enabled HPA functionality with resource metrics
@@ -93,38 +93,6 @@ The solution addresses common deployment challenges including port conflicts, me
 - **Metrics Verification**: Validated metrics collection and dashboard functionality
 - **Load Testing**: Tested auto-scaling behavior under load
 
-## Screenshots
-
-### Application Screenshots
-![E-commerce Homepage](assets/images/homepage.png)
-*E-commerce application homepage with product catalog*
-
-![Shopping Cart](assets/images/cart.png)
-*Shopping cart functionality with product management*
-
-![Payment Process](assets/images/payment.png)
-*Payment processing interface*
-
-### Infrastructure Screenshots
-![Infrastructure Overview](assets/images/infra.png)
-*Kubernetes cluster infrastructure and pod status*
-
-![Instance Metrics](assets/images/instance.png)
-*AWS EC2 instance metrics showing CPU, memory, and network utilization*
-
-![Auto-scaling Configuration](assets/images/autoscaling.png)
-*Horizontal Pod Autoscaler (HPA) configuration and status*
-
-### Monitoring Screenshots
-![Prometheus Metrics](assets/images/prometheus.png)
-*Prometheus metrics collection and targets status*
-
-![Grafana Dashboard](assets/images/grafana.png)
-*Comprehensive Grafana monitoring dashboard*
-
-![All Services Status](assets/images/all.png)
-*Complete deployment status showing all running services*
-
 ## Conclusion
 
 The project successfully demonstrates a production-ready e-commerce application deployment on Kubernetes with comprehensive monitoring and auto-scaling capabilities. Key achievements include:
@@ -144,14 +112,7 @@ The project serves as a comprehensive example of modern cloud-native application
 **Project Statistics:**
 - **Total Files**: 25+ Kubernetes manifests and configuration files
 - **Services Deployed**: 6 (Application, Database, Monitoring, Metrics, HPA, NodePorts)
-- **Dashboard Panels**: 12 comprehensive monitoring panels
+- **Dashboard Panels**: 8 comprehensive monitoring panels
 - **Alert Rules**: 6 critical system alerts
 - **Deployment Time**: ~5 minutes for complete stack
 - **Monitoring Coverage**: 100% of critical application and infrastructure metrics
-
-## 📄 Complete Project Report (PDF)
-
-**Download the comprehensive project report:**
-[📊 E-commerce Kubernetes Project Report - PDF](https://drive.google.com/file/d/1CtE0sUTZmSVK9Qz44GYG0pTFdZXVnc8E/view?usp=sharing)
-
-*This PDF contains the complete project documentation including detailed architecture diagrams, step-by-step deployment instructions, monitoring configuration, and comprehensive analysis of the Kubernetes e-commerce deployment.*
