@@ -101,11 +101,18 @@ docker-compose up --build -d
 - t2.medium instance or better
 - Root access
 
-### Step 1: Setup Server
+### Step 1: Clone Repository
 ```bash
+# Clone the repository
+git clone https://github.com/tohidhanfi20/k8s-ecommerse.git
+cd k8s-ecommerse
+
 # Make script executable
 chmod +x scripts/instance-setup.sh
+```
 
+### Step 2: Setup Server
+```bash
 # Run instance setup (as root)
 sudo ./scripts/instance-setup.sh
 ```
@@ -118,7 +125,7 @@ sudo ./scripts/instance-setup.sh
 - Installs Flannel CNI
 - Installs metrics server
 
-### Step 2: Build and Push Docker Image
+### Step 3: Build and Push Docker Image
 ```bash
 # Build the image
 docker build -t tohidazure/k8s-ecommerce:latest .
@@ -130,14 +137,17 @@ docker login
 docker push tohidazure/k8s-ecommerce:latest
 ```
 
-### Step 3: Update Image in Kubernetes Manifests
+### Step 4: Update Image in Kubernetes Manifests
 ```bash
 # Update the image in ecommerce deployment
 sed -i 's|tohidazure/k8s-ecommerce:latest|tohidazure/k8s-ecommerce:latest|g' k8s/base/ecommerce-deployment.yaml
 ```
 
-### Step 4: Deploy Application
+### Step 5: Deploy Application
 ```bash
+# Make sure you're in the project directory
+cd k8s-ecommerse
+
 # Step 1: Create namespace and base configuration
 kubectl apply -f k8s/base/namespace.yaml
 kubectl apply -f k8s/base/configmap.yaml
@@ -169,7 +179,7 @@ kubectl get pods -n ecommerce
 kubectl wait --for=condition=ready pod -l app=ecommerce-app -n ecommerce --timeout=300s
 ```
 
-### Step 5: Access Application
+### Step 6: Access Application
 
 #### Option 1: Port Forward (Local Access)
 ```bash
@@ -196,7 +206,7 @@ kubectl get services -n ecommerce -o custom-columns="NAME:.metadata.name,TYPE:.s
 # Note: NodePorts are auto-assigned by Kubernetes (range: 30000-32767)
 ```
 
-### Step 6: Verify Everything is Working
+### Step 7: Verify Everything is Working
 ```bash
 # Check all resources
 kubectl get all -n ecommerce
@@ -217,6 +227,9 @@ kubectl top pods -n ecommerce
 
 ### Alternative: One-Command Deployment
 ```bash
+# Make sure you're in the project directory
+cd k8s-ecommerse
+
 # Deploy everything in correct sequence with one command
 kubectl apply -f k8s/base/namespace.yaml && \
 kubectl apply -f k8s/base/configmap.yaml && \
